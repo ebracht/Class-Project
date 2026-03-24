@@ -1,0 +1,155 @@
+# Class-Project
+
+Our proposed research question is: How have changes in mortgage interest rates and housing prices affected homeownership rates across U.S. states over time?
+
+To study this, we plan to build a panel data set that examines each state-year on homeownership rate, housing affordability, mortgage rates, and other relevant variables like median income or unemployment rate. Our primary data sources will be the U.S. Census Bureau and the Federal Reserve Economic Data (FRED), which includes state homeownership rates and the 30-year fixed mortgage rate. Additionally, the Federal Housing Finance Agency’s House Price Index, which provides state-level data on house price changes, and the Bureau of Labor Statistics, which has state-level data on unemployment, will be pulled. Together, these sources will provide panel data that can be used to examine how rising mortgage rates and increasing prices affect homeownership, while allowing room for controls like unemployment, median income, or population, to understand this effect better.
+
+Once we have established the relationship between mortgage interest rates, housing affordability, and home ownership rates, we will consider what policy options or levers are available to improve home ownership rates. We may do this by conducting additional primary analysis to test the efficacy of certain policies where data are available, or by consulting the relevant literature to form reasonable conclusions about the linkages between various housing policies and mortgage rates/affordability. Once we have identified policy recommendations, we will present these to the U.S. Secretary of Housing and Urban Development, Scott Turner.
+
+The Secretary of Housing and Urban Development (HUD) manages the Department of Housing and Urban Development, with responsibilities including the creation and oversight of affordable housing policies and programs and advising the President on housing issues. As our ultimate aim is to contribute to improving home ownership rates, we will explore the various economic indicators that may positively or negatively impact this, strategically analyzing these relationships in order to make predictions and recommendations for affecting future policy change. Secretary Turner has the power to act on these recommendations, with his actions guided by a goal of creating affordable housing policy. Our work exploring homeownership rates is well-aligned not only with this goal, but also Turner’s previous efforts on opportunity zones. Thus, Scott Turner is the key figure whom we will focus the implications of our findings toward. We plan to create these visualizations using a mix of software programs (including R and Tableau) to create easily and quickly digestible visualizations that best inform and support our recommendations.
+
+
+**Sources:**
+
+- https://fred.stlouisfed.org/series/MORTGAGE30US 
+- https://www.fhfa.gov/data/hpi/datasets?tab=quarterly-data 
+- https://www.census.gov/data.html 
+- https://www.bls.gov/web/laus/laumstrk.htm 
+
+**Load Required Packages:**
+
+- tidyverse
+- janitor
+- readr
+- readxl
+- tidycensus
+- fredr
+- lubridate
+- tsibble
+- fpp3
+
+```{r load_packages, include=FALSE}
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+###### Load required packages ########
+packages <- c(
+  # data manipulation
+  "tidyverse",
+  "janitor",
+  # data import/extraction
+  "readr",
+  "readxl",
+  "tidycensus",
+  "fredr",
+  # dates and time handling
+  "lubridate",
+  # time series structure and analysis
+  "tsibble",
+  "fpp3"
+)
+
+# checks if package available (if not - install packages)
+# load packages
+check.packages <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg))
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
+check.packages(packages)
+```
+
+**Set API Keys:**
+
+- [tidycensus api key](https://api.census.gov/data/key_signup.html)
+- [fredr api key](https://fred.stlouisfed.org/docs/api/api_key.html)
+```{r set_api_keys, include=FALSE}
+census_api_key("894b3464183cec8f6c0fa053eb34d0d878de682e")
+fredr_set_key("8351bf4f459d0e8c92d56f50021947d8")
+```
+
+**Import necessary data:**
+```{r import_data, message=FALSE, warning=FALSE}
+#Set years to include the last two decades, excluding 2020 due to the COVID-19 pandemic.
+years <- c(2005:2019, 2021:2024)
+
+#Extract homeownership data from the Census
+homeownership <- map_dfr(
+  years,
+  \(yr) {
+    get_acs(
+      geography = "state",
+      variables = c(
+        total_occupied = "B25003_001",
+        owner_occupied = "B25003_002"
+      ),
+      year = yr,
+      survey = "acs1"
+    ) %>%
+      select(NAME, variable, estimate) %>%
+      pivot_wider(names_from = variable, values_from = estimate) %>%
+      mutate(
+        year = yr,
+        homeownership_rate = 100 * owner_occupied / total_occupied
+      ) %>%
+      transmute(
+        state = NAME,
+        year,
+        homeownership_rate
+      )
+  }
+)
+
+#Extract income data from the Census
+income_list <- map(
+  years,
+  ~ get_acs(
+      geography = "state",
+      variables = "B19013_001",
+      year = .x,
+      survey = "acs1"
+    ) %>%
+      transmute(
+        state = NAME,
+        year = .x,
+        median_income = estimate
+      )
+)
+
+#Bind the income data into a DF
+income <- bind_rows(income_list)
+
+#Extract population data from the Census
+population_list <- map(
+  years,
+  ~ get_acs(
+      geography = "state",
+      variables = "B01003_001",
+      year = .x,
+      survey = "acs1"
+    ) %>%
+      transmute(
+        state = NAME,
+        year = .x,
+        population = estimate
+      )
+)
+
+#Bind the population data into a DF
+population <- bind_rows(population_list)
+
+#Extract mortgage data from FRED
+mortgage_raw <- fredr(
+  series_id = "MORTGAGE30US",
+  observation_start = as.Date("2005-01-01")
+)
+
+#Estimate annual mortgage rates
+mortgage_annual <- mortgage_raw %>%
+  mutate(year = year(date)) %>%
+  group_by(year) %>%
+  summarise(
+    mortgage_rate = mean(value, na.rm = TRUE),
+    .groups = "drop"
+  )
+```
+
