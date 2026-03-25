@@ -81,7 +81,7 @@ years <- c(2005:2019, 2021:2024)
 #Extract homeownership data from the Census
 homeownership <- map_dfr(
   years,
-  \(yr) {
+  function(yr) {
     get_acs(
       geography = "state",
       variables = c(
@@ -158,3 +158,70 @@ mortgage_annual <- mortgage_raw %>%
     .groups = "drop"
   )
 ```
+
+**Merge imported data:**
+
+``` r
+#Merge the data sets by year and state
+merged <- left_join(
+  population, 
+  income, 
+  by=c("state", "year")) %>%
+  left_join(
+    homeownership,
+    by=c("state", "year")) %>%
+      left_join(
+        mortgage_annual,
+        by="year")
+```
+
+**Compute population summary statistics:**
+
+    ## Summary statistics for population:
+
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    ##   495226  1773866  4236748  6177740  7053887 39557045
+
+    ## Standard Deviation: 6964177
+
+    ## Variance: 4.849976e+13
+
+**Compute median income summary statistics:**
+
+    ## Summary statistics for median income:
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   17184   47153   55609   57792   66969  109707
+
+    ## Standard Deviation: 14977.34
+
+    ## Variance: 224320711
+
+**Compute homeownership rate summary statistics:**
+
+    ## Summary statistics for homeownership rate:
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   39.12   64.78   67.47   66.54   69.94   76.30
+
+    ## Standard Deviation: 5.580628
+
+    ## Variance: 31.14341
+
+**Compute mortgage rate summary statistics:**
+
+    ## Summary statistics for mortgage rate:
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   2.958   3.936   4.545   4.864   6.027   6.807
+
+    ## Standard Deviation: 1.152178
+
+    ## Variance: 1.327514
+
+**Plot mortgage rate and national average homeownership rate:**
+
+    ## Warning: Removed 2 rows containing missing values or values outside the scale range
+    ## (`geom_line()`).
+
+![](README_files/figure-gfm/figure_1-1.png)<!-- -->

@@ -1,10 +1,10 @@
 ---
 title: "Class Project"
 output:
-  html_document: default
   github_document:
     toc: true
     toc_depth: 2
+  html_document: default
 ---
 Our proposed research question is: How have changes in mortgage interest rates and housing prices affected homeownership rates across U.S. states over time?
 
