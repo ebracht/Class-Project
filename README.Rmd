@@ -1,6 +1,7 @@
 ---
 title: "Class Project"
 output:
+  html_document: default
   github_document:
     toc: true
     toc_depth: 2
@@ -80,7 +81,7 @@ years <- c(2005:2019, 2021:2024)
 #Extract homeownership data from the Census
 homeownership <- map_dfr(
   years,
-  \(yr) {
+  function(yr) {
     get_acs(
       geography = "state",
       variables = c(
@@ -158,3 +159,78 @@ mortgage_annual <- mortgage_raw %>%
   )
 ```
 
+**Merge imported data:**
+```{r merge_data, message=FALSE}
+#Merge the data sets by year and state
+merged <- left_join(
+  population, 
+  income, 
+  by=c("state", "year")) %>%
+  left_join(
+    homeownership,
+    by=c("state", "year")) %>%
+      left_join(
+        mortgage_annual,
+        by="year")
+```
+
+**Compute population summary statistics:**
+```{r pop_summary_statistics, echo=FALSE, message=FALSE, }
+cat("Summary statistics for population:")
+summary(merged$population)
+cat("Standard Deviation:", sd(merged$population))
+cat("Variance:", var(merged$population))
+```
+
+**Compute median income summary statistics:**
+```{r medinc_summary_statistics, echo=FALSE, message=FALSE, }
+cat("Summary statistics for median income:")
+summary(merged$median_income)
+cat("Standard Deviation:", sd(merged$median_income))
+cat("Variance:", var(merged$median_income))
+```
+
+**Compute homeownership rate summary statistics:**
+```{r ownrate_summary_statistics, echo=FALSE, message=FALSE, }
+cat("Summary statistics for homeownership rate:")
+summary(merged$homeownership_rate)
+cat("Standard Deviation:", sd(merged$homeownership_rate))
+cat("Variance:", var(merged$homeownership_rate))
+```
+
+**Compute mortgage rate summary statistics:**
+```{r mortgrate_summary_statistics, echo=FALSE, message=FALSE, }
+cat("Summary statistics for mortgage rate:")
+summary(merged$mortgage_rate)
+cat("Standard Deviation:", sd(merged$mortgage_rate))
+cat("Variance:", var(merged$mortgage_rate))
+```
+
+**Plot mortgage rate and national average homeownership rate:**
+```{r figure_1, echo=FALSE, message=FALSE, }
+#Calculate the average homeownership rate weighted by population
+averagehomeownership <- merged %>%
+  group_by(year) %>%
+  summarise(average_homeownership_rate=weighted.mean(homeownership_rate,
+                           weights = population,
+                           na.rm = TRUE))
+
+#Merge with the mortgage rate
+merged_year <- left_join(
+  mortgage_annual,
+  averagehomeownership,
+  by ="year")
+
+#Convert from wide to long format
+mergedlong <- merged_year %>%
+  pivot_longer(cols=-year, names_to="Category", values_to="Value")
+
+#Plot the mortgage rate and homeownership rate.
+  ggplot(mergedlong, mapping = aes(x = year, y = Value, color = Category)) +
+  geom_line() +
+  labs(x = "Year", y = "Rate", color = "Series") +
+  ggtitle("National Average Homeownership Rate and Mortgage Rate") +
+  expand_limits(y=0) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
