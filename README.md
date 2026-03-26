@@ -243,6 +243,10 @@ or Option 2)
     analytical story to your GitHub repository. Report requirements are
     outlined below.
 
+``` r
+remove(list=ls())
+```
+
 **Load Required Packages:**
 
 - tidyverse
@@ -347,6 +351,122 @@ mortgage_annual <- mortgage_raw %>%
   )
 ```
 
+``` r
+# Import Local Data
+fhfa_raw <- read_csv("DaAn Midterm/hpi_at_state (1).csv", col_names = FALSE) %>%
+  setNames(c("state", "year", "quarter", "hpi"))
+```
+
+    ## Rows: 10404 Columns: 4
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (1): X1
+    ## dbl (3): X2, X3, X4
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+names(fhfa_raw)
+```
+
+    ## [1] "state"   "year"    "quarter" "hpi"
+
+``` r
+# Set HPI data by state/year
+fhfa_annual <- fhfa_raw %>%
+  clean_names() %>%
+  filter(year >= 2005) %>%
+  group_by(state, year) %>%
+  summarise(
+    hpi = mean(hpi, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+hpi_annual <- fhfa_annual %>%
+  mutate(state = state.name[match(state, state.abb)])
+```
+
+``` r
+# Import local unemployment data
+bls_data <- read_delim("DaAn Midterm/la.data.2.AllStatesU.txt", delim = "\t") %>%
+  clean_names()
+```
+
+    ## Rows: 234289 Columns: 5
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: "\t"
+    ## chr (4): series_id                     , period,        value, footnote_codes
+    ## dbl (1): year
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+bls_series <- read_delim("DaAn Midterm/la.series.txt", delim = "\t") %>%
+  clean_names()
+```
+
+    ## Warning: One or more parsing issues, call `problems()` on your data frame for details,
+    ## e.g.:
+    ##   dat <- vroom(...)
+    ##   problems(dat)
+
+    ## Rows: 33881 Columns: 12
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: "\t"
+    ## chr (9): series_id                     , area_type_code, area_code, measure_...
+    ## dbl (2): begin_year, end_year
+    ## lgl (1): footnote_codes
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+bls_area <- read_delim("DaAn Midterm/la.area", delim = "\t") %>%
+  clean_names()
+```
+
+    ## Rows: 8325 Columns: 6
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: "\t"
+    ## chr (3): area_type_code, area_code, area_text
+    ## dbl (2): display_level, sort_sequence
+    ## lgl (1): selectable
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+# Join the actual data to the series
+bls_merged <- bls_data %>%
+  left_join(bls_series, by = "series_id")
+
+# Use key to select code
+bls_merged <- bls_merged %>%
+  left_join(
+    bls_area %>% select(area_code, area_text),
+    by = "area_code"
+  )
+
+# Keep annual-average unemployment rate
+state_unemployment <- bls_merged %>%
+  filter(period == "M13") %>%          # annual average
+  filter(measure_code == "03") %>%     # unemployment rate
+  transmute(
+    state = area_text,
+    year = as.integer(year),
+    unemployment_rate = as.numeric(value)
+  ) %>%
+  filter(state %in% c(state.name, "District of Columbia")) %>%
+  arrange(state, year)
+```
+
+    ## Warning: There was 1 warning in `transmute()`.
+    ## ℹ In argument: `unemployment_rate = as.numeric(value)`.
+    ## Caused by warning:
+    ## ! NAs introduced by coercion
+
 **Merge imported data:**
 
 ``` r
@@ -359,8 +479,14 @@ merged <- left_join(
     homeownership,
     by=c("state", "year")) %>%
       left_join(
-        mortgage_annual,
-        by="year")
+        hpi_annual,
+        by=c("state", "year")) %>%
+          left_join(
+            state_unemployment, 
+            by = c("state", "year")) %>%
+              left_join(
+                mortgage_annual,
+                by="year") 
 ```
 
 **Compute population summary statistics:**
@@ -407,9 +533,58 @@ merged <- left_join(
 
     ## Variance: 1.327514
 
+**Compute HPI summary statistics**
+
+    ## Summary statistics for HPI:
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+    ##   183.5   286.2   365.8   406.6   473.6  1229.7      38
+
+    ## Standard Deviation: NA
+
+    ## Variance: NA
+
+**Compute Unemployment summary statistics**
+
+    ## Summary statistics for Unemployment:
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+    ##   1.800   3.700   4.800   5.294   6.500  13.500      19
+
+    ## Standard Deviation: NA
+
+    ## Variance: NA
+
 **Plot mortgage rate and national average homeownership rate:**
-
-    ## Warning: Removed 2 rows containing missing values or values outside the scale range
-    ## (`geom_line()`).
-
 ![](README_files/figure-gfm/figure_1-1.png)<!-- -->
+
+``` r
+# Histogram plots of key variables
+merged %>%
+  select(
+    homeownership_rate,
+    median_income,
+    population,
+    hpi,
+    unemployment_rate
+  ) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "value"
+  ) %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  facet_wrap(~ variable, scales = "free", ncol = 2) +
+  labs(
+    title = "Histograms of Key Variables",
+    x = "Value",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+    ## Warning: Removed 57 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->

@@ -120,7 +120,9 @@ Talked through Checkpoint 1 criteria and made the following plan in advance of M
 
 8) Publish a detailed, well formatted markdown report of your analytical story to your GitHub repository. Report requirements are outlined below.
 
-
+```{r}
+remove(list=ls())
+```
 
 **Load Required Packages:**
 
@@ -150,7 +152,8 @@ packages <- c(
   "lubridate",
   # time series structure and analysis
   "tsibble",
-  "fpp3"
+  "fpp3",
+  "patchwork"
 )
 
 # checks if package available (if not - install packages)
@@ -259,6 +262,64 @@ mortgage_annual <- mortgage_raw %>%
   )
 ```
 
+```{r}
+# Import Local Data
+fhfa_raw <- read_csv("DaAn Midterm/hpi_at_state (1).csv", col_names = FALSE) %>%
+  setNames(c("state", "year", "quarter", "hpi"))
+
+names(fhfa_raw)
+```
+
+```{r}
+# Set HPI data by state/year
+fhfa_annual <- fhfa_raw %>%
+  clean_names() %>%
+  filter(year >= 2005) %>%
+  group_by(state, year) %>%
+  summarise(
+    hpi = mean(hpi, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+hpi_annual <- fhfa_annual %>%
+  mutate(state = state.name[match(state, state.abb)])
+```
+
+```{r}
+# Import local unemployment data
+bls_data <- read_delim("DaAn Midterm/la.data.2.AllStatesU.txt", delim = "\t") %>%
+  clean_names()
+
+bls_series <- read_delim("DaAn Midterm/la.series.txt", delim = "\t") %>%
+  clean_names()
+
+bls_area <- read_delim("DaAn Midterm/la.area", delim = "\t") %>%
+  clean_names()
+
+# Join the actual data to the series
+bls_merged <- bls_data %>%
+  left_join(bls_series, by = "series_id")
+
+# Use key to select code
+bls_merged <- bls_merged %>%
+  left_join(
+    bls_area %>% select(area_code, area_text),
+    by = "area_code"
+  )
+
+# Keep annual-average unemployment rate
+state_unemployment <- bls_merged %>%
+  filter(period == "M13") %>%          # annual average
+  filter(measure_code == "03") %>%     # unemployment rate
+  transmute(
+    state = area_text,
+    year = as.integer(year),
+    unemployment_rate = as.numeric(value)
+  ) %>%
+  filter(state %in% c(state.name, "District of Columbia")) %>%
+  arrange(state, year)
+```
+
 **Merge imported data:**
 ```{r merge_data, message=FALSE}
 #Merge the data sets by year and state
@@ -270,8 +331,14 @@ merged <- left_join(
     homeownership,
     by=c("state", "year")) %>%
       left_join(
-        mortgage_annual,
-        by="year")
+        hpi_annual,
+        by=c("state", "year")) %>%
+          left_join(
+            state_unemployment, 
+            by = c("state", "year")) %>%
+              left_join(
+                mortgage_annual,
+                by="year") 
 ```
 
 **Compute population summary statistics:**
@@ -306,31 +373,96 @@ cat("Standard Deviation:", sd(merged$mortgage_rate))
 cat("Variance:", var(merged$mortgage_rate))
 ```
 
+**Compute HPI summary statistics**
+```{r HPI_summary_statistics, echo=FALSE, message=FALSE, }
+cat("Summary statistics for HPI:")
+summary(merged$hpi)
+cat("Standard Deviation:", sd(merged$hpi))
+cat("Variance:", var(merged$hpi))
+```
+
+**Compute Unemployment summary statistics**
+```{r Unemployment_summary_statistics, echo=FALSE, message=FALSE, }
+cat("Summary statistics for Unemployment:")
+summary(merged$unemployment_rate)
+cat("Standard Deviation:", sd(merged$unemployment_rate))
+cat("Variance:", var(merged$unemployment_rate))
+```
+
 **Plot mortgage rate and national average homeownership rate:**
 ```{r figure_1, echo=FALSE, message=FALSE, }
-#Calculate the average homeownership rate weighted by population
-averagehomeownership <- merged %>%
+# Average homeownership rate over time
+avg_homeownership_ts <- merged %>%
   group_by(year) %>%
-  summarise(average_homeownership_rate=weighted.mean(homeownership_rate,
-                           weights = population,
-                           na.rm = TRUE))
+  summarise(
+    avg_homeownership_rate = mean(homeownership_rate, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  as_tsibble(index = year)
 
-#Merge with the mortgage rate
-merged_year <- left_join(
-  mortgage_annual,
-  averagehomeownership,
-  by ="year")
+# Plot using fpp3
+p1 <- autoplot(avg_homeownership_ts, avg_homeownership_rate) +
+  labs(
+    title = "Average State Homeownership Rate Over Time",
+    x = "Year",
+    y = "Homeownership Rate (%)"
+  )
 
-#Convert from wide to long format
-mergedlong <- merged_year %>%
-  pivot_longer(cols=-year, names_to="Category", values_to="Value")
+# Average HPI over time
+avg_hpi_ts <- merged %>%
+  group_by(year) %>%
+  summarise(
+    avg_hpi = mean(hpi, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  as_tsibble(index = year)
 
-#Plot the mortgage rate and homeownership rate.
-  ggplot(mergedlong, mapping = aes(x = year, y = Value, color = Category)) +
-  geom_line() +
-  labs(x = "Year", y = "Rate", color = "Series") +
-  ggtitle("National Average Homeownership Rate and Mortgage Rate") +
-  expand_limits(y=0) +
-  theme(plot.title = element_text(hjust = 0.5))
+# Plot using fpp3
+p2 <- autoplot(avg_hpi_ts, avg_hpi) +
+  labs(
+    title = "Average State House Price Index Over Time",
+    x = "Year",
+    y = "Average HPI"
+  )
 
+# Mortgage rate over time
+mortgage_ts <- mortgage_annual %>%
+  as_tsibble(index = year)
+
+# Plot using fpp3
+p3 <- autoplot(mortgage_ts, mortgage_rate) +
+  labs(
+    title = "Average 30-Year Mortgage Rate Over Time",
+    x = "Year",
+    y = "Mortgage Rate (%)"
+  )
+
+# Combine all three plots
+p1 / p2 / p3
+
+```
+```{r}
+# Histogram plots of key variables
+merged %>%
+  select(
+    homeownership_rate,
+    median_income,
+    population,
+    hpi,
+    unemployment_rate
+  ) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "value"
+  ) %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  facet_wrap(~ variable, scales = "free", ncol = 2) +
+  labs(
+    title = "Histograms of Key Variables",
+    x = "Value",
+    y = "Count"
+  ) +
+  theme_minimal()
 ```
