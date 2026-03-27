@@ -1,6 +1,68 @@
 Class Project
 ================
 
+- [Checkpoint 1: Progress on Eight Major
+  Tasks](#checkpoint-1-progress-on-eight-major-tasks)
+- [Research Topic](#research-topic)
+- [Meeting Minutes and Personal
+  Contributions](#meeting-minutes-and-personal-contributions)
+
+## Checkpoint 1: Progress on Eight Major Tasks
+
+**1) Propose a research topic (Option 1 or Option 2)**
+
+Each team member proposed a thoughtful research topic along with
+relevant data sources. After deliberation (see meeting minutes below),
+our team chose to study how mortgage rates influence homeownership rates
+across the U.S. To study this topic, our team is constructing a panel
+dataset comprised of several reliable data sources including data from
+the U.S. Census Bureau, FRED, and BLS. We will organize our findings to
+Scott Turner, Secretary of Housing and Urban Development (HUD), to
+inform U.S. housing policy decisions.
+
+**2) Create a GitHub repository and establish best practices for team
+collaboration**
+
+We have created a GitHub repository. Each member has made substantial
+contributions. Thus far, we have included the following in this
+repository: the project topic, meeting minutes, information on the
+packages and API keys needed for analysis, code to import relevant data,
+summary statistics for key variables, and several helpful
+visualizations.
+
+**3) Demonstrate merging of multiple data sources**
+
+To construct our panel dataset, we have imported, cleaned, and merged
+several data sources: population and income income data from the Census,
+homeownership data from the Census, the housing price index,
+unemployment data from BLS, and mortgage data from FRED.
+
+**4) Visualize data using Tableau, R, Python, or a combination**
+
+We have used R to create several figures, including line graphs and
+histograms to accompany the summary statistics.
+
+**5) Generate meaningful summary statistic (KPIs) of the data**
+
+We have generated summary statistics for the key variables we intend to
+analyze.
+
+**6) Submit draft of progress at Checkpoint 1 and Checkpoint 2**
+
+This branch is our Checkpoint 1 Submission.
+
+**7) Summarize your findings in a short video presentation**
+
+We will make progress on this in the coming weeks.
+
+**8) Publish a detailed, well formatted markdown report of your
+analytical story to your GitHub repository**
+
+We have posted this markdown file to our landing page. This will become
+the basis of our report.
+
+## Research Topic
+
 Our proposed research question is: How have changes in mortgage interest
 rates and housing prices affected homeownership rates across U.S. states
 over time?
@@ -55,11 +117,7 @@ recommendations.
 - <https://www.census.gov/data.html>
 - <https://www.bls.gov/web/laus/laumstrk.htm>
 
-Our proposed research question is: How have changes in mortgage interest
-rates and housing prices affected homeownership rates across U.S. states
-over time?
-
-**Personal Contributions**
+## Meeting Minutes and Personal Contributions
 
 **Meeting 1 (02/25):**
 
@@ -211,7 +269,7 @@ to bring in multiple years of Census data
 Levi will investigate data availability for controlling for state
 housing policy
 
-**Meeting 3 (03/18)**
+**Meeting 4 (03/18)**
 
 Talked through Checkpoint 1 criteria and made the following plan in
 advance of Meeting 4: Work on README/update on Github Updates on
@@ -222,30 +280,6 @@ Try to run code that someone else posted on github
 We can think on/try simple visualizations but seems like we don’t
 actually need anything for a little while  
 Date to keep in mind: April 14th is when project draft is due
-
-**Progress on Eight Major Tasks** 1) Propose a research topic (Option 1
-or Option 2)
-
-2)  Create a GitHub repository and establish best practices for team
-    collaboration.
-
-3)  Demonstrate merging of multiple data sources
-
-4)  Visualize data using Tableau, R, Python, or a combination
-
-5)  Generate meaningful summary statistic (KPIs) of the data
-
-6)  Submit draft of progress at Checkpoint 1 and Checkpoint 2.
-
-7)  Summarize your findings in a short video presentation.
-
-8)  Publish a detailed, well formatted markdown report of your
-    analytical story to your GitHub repository. Report requirements are
-    outlined below.
-
-``` r
-remove(list=ls())
-```
 
 **Load Required Packages:**
 
@@ -264,7 +298,7 @@ remove(list=ls())
 - [tidycensus api key](https://api.census.gov/data/key_signup.html)
 - [fredr api key](https://fred.stlouisfed.org/docs/api/api_key.html)
 
-**Import necessary data:**
+**Import online data:**
 
 ``` r
 #Set years to include the last two decades, excluding 2020 due to the COVID-19 pandemic.
@@ -351,28 +385,13 @@ mortgage_annual <- mortgage_raw %>%
   )
 ```
 
+**Import local data:**
+
 ``` r
 # Import Local Data
 fhfa_raw <- read_csv("DaAn Midterm/hpi_at_state (1).csv", col_names = FALSE) %>%
   setNames(c("state", "year", "quarter", "hpi"))
-```
 
-    ## Rows: 10404 Columns: 4
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (1): X1
-    ## dbl (3): X2, X3, X4
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
-names(fhfa_raw)
-```
-
-    ## [1] "state"   "year"    "quarter" "hpi"
-
-``` r
 # Set HPI data by state/year
 fhfa_annual <- fhfa_raw %>%
   clean_names() %>%
@@ -385,59 +404,17 @@ fhfa_annual <- fhfa_raw %>%
 
 hpi_annual <- fhfa_annual %>%
   mutate(state = state.name[match(state, state.abb)])
-```
 
-``` r
 # Import local unemployment data
 bls_data <- read_delim("DaAn Midterm/la.data.2.AllStatesU.txt", delim = "\t") %>%
   clean_names()
-```
 
-    ## Rows: 234289 Columns: 5
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: "\t"
-    ## chr (4): series_id                     , period,        value, footnote_codes
-    ## dbl (1): year
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 bls_series <- read_delim("DaAn Midterm/la.series.txt", delim = "\t") %>%
   clean_names()
-```
 
-    ## Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    ## e.g.:
-    ##   dat <- vroom(...)
-    ##   problems(dat)
-
-    ## Rows: 33881 Columns: 12
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: "\t"
-    ## chr (9): series_id                     , area_type_code, area_code, measure_...
-    ## dbl (2): begin_year, end_year
-    ## lgl (1): footnote_codes
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 bls_area <- read_delim("DaAn Midterm/la.area", delim = "\t") %>%
   clean_names()
-```
 
-    ## Rows: 8325 Columns: 6
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: "\t"
-    ## chr (3): area_type_code, area_code, area_text
-    ## dbl (2): display_level, sort_sequence
-    ## lgl (1): selectable
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 # Join the actual data to the series
 bls_merged <- bls_data %>%
   left_join(bls_series, by = "series_id")
@@ -461,11 +438,6 @@ state_unemployment <- bls_merged %>%
   filter(state %in% c(state.name, "District of Columbia")) %>%
   arrange(state, year)
 ```
-
-    ## Warning: There was 1 warning in `transmute()`.
-    ## ℹ In argument: `unemployment_rate = as.numeric(value)`.
-    ## Caused by warning:
-    ## ! NAs introduced by coercion
 
 **Merge imported data:**
 
@@ -587,4 +559,4 @@ merged %>%
     ## Warning: Removed 57 rows containing non-finite outside the scale range
     ## (`stat_bin()`).
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->

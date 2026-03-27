@@ -6,6 +6,41 @@ output:
     toc_depth: 2
   html_document: default
 ---
+
+## Checkpoint 1: Progress on Eight Major Tasks
+**1) Propose a research topic (Option 1 or Option 2)**
+
+Each team member proposed a thoughtful research topic along with relevant data sources. After deliberation (see meeting minutes below), our team chose to study how mortgage rates influence homeownership rates across the U.S. To study this topic, our team is constructing a panel dataset comprised of several reliable data sources including data from the U.S. Census Bureau, FRED, and BLS. We will organize our findings to Scott Turner, Secretary of Housing and Urban Development (HUD), to inform U.S. housing policy decisions.
+  
+**2) Create a GitHub repository and establish best practices for team collaboration**
+
+We have created a GitHub repository. Each member has made substantial contributions. Thus far, we have included the following in this repository: the project topic, meeting minutes, information on the packages and API keys needed for analysis, code to import relevant data, summary statistics for key variables, and several helpful visualizations.
+
+**3) Demonstrate merging of multiple data sources**
+
+To construct our panel dataset, we have imported, cleaned, and merged several data sources: population and income income data from the Census, homeownership data from the Census, the housing price index, unemployment data from BLS, and mortgage data from FRED.
+  
+**4) Visualize data using Tableau, R, Python, or a combination**
+
+We have used R to create several figures, including line graphs and histograms to accompany the summary statistics.
+
+**5) Generate meaningful summary statistic (KPIs) of the data**
+
+We have generated summary statistics for the key variables we intend to analyze.
+
+**6) Submit draft of progress at Checkpoint 1 and Checkpoint 2**
+
+This branch is our Checkpoint 1 Submission.
+
+**7) Summarize your findings in a short video presentation**
+
+We will make progress on this in the coming weeks.
+
+**8) Publish a detailed, well formatted markdown report of your analytical story to your GitHub repository**
+
+We have posted this markdown file to our landing page. This will become the basis of our report.
+
+## Research Topic
 Our proposed research question is: How have changes in mortgage interest rates and housing prices affected homeownership rates across U.S. states over time?
 
 To study this, we plan to build a panel data set that examines each state-year on homeownership rate, housing affordability, mortgage rates, and other relevant variables like median income or unemployment rate. Our primary data sources will be the U.S. Census Bureau and the Federal Reserve Economic Data (FRED), which includes state homeownership rates and the 30-year fixed mortgage rate. Additionally, the Federal Housing Finance Agency’s House Price Index, which provides state-level data on house price changes, and the Bureau of Labor Statistics, which has state-level data on unemployment, will be pulled. Together, these sources will provide panel data that can be used to examine how rising mortgage rates and increasing prices affect homeownership, while allowing room for controls like unemployment, median income, or population, to understand this effect better.
@@ -22,9 +57,7 @@ The Secretary of Housing and Urban Development (HUD) manages the Department of H
 - https://www.census.gov/data.html 
 - https://www.bls.gov/web/laus/laumstrk.htm 
 
-Our proposed research question is: How have changes in mortgage interest rates and housing prices affected homeownership rates across U.S. states over time?
-
-**Personal Contributions**
+## Meeting Minutes and Personal Contributions
 
 **Meeting 1 (02/25):**
 
@@ -90,7 +123,7 @@ We agreed to move forward with Ryan's topic, and prepared for our topic submissi
   Ryan will upload a file joining Census and FRED data, including a loop to bring in multiple years of Census data  
   Levi will investigate data availability for controlling for state housing policy  
 
-**Meeting 3 (03/18)**
+**Meeting 4 (03/18)**
 
 Talked through Checkpoint 1 criteria and made the following plan in advance of Meeting 4:
   Work on README/update on Github 
@@ -102,25 +135,7 @@ Talked through Checkpoint 1 criteria and made the following plan in advance of M
     We can think on/try simple visualizations but seems like we don’t actually need anything for a little while  
   Date to keep in mind: April 14th is when project draft is due
 
-
-**Progress on Eight Major Tasks**
-1) Propose a research topic (Option 1 or Option 2)
-  
-2) Create a GitHub repository and establish best practices for team collaboration.
-
-3) Demonstrate merging of multiple data sources
-  
-4) Visualize data using Tableau, R, Python, or a combination
-
-5) Generate meaningful summary statistic (KPIs) of the data
-
-6) Submit draft of progress at Checkpoint 1 and Checkpoint 2.
-
-7) Summarize your findings in a short video presentation.
-
-8) Publish a detailed, well formatted markdown report of your analytical story to your GitHub repository. Report requirements are outlined below.
-
-```{r}
+```{r clear_environment, include=FALSE}
 remove(list=ls())
 ```
 
@@ -176,7 +191,7 @@ census_api_key("894b3464183cec8f6c0fa053eb34d0d878de682e")
 fredr_set_key("8351bf4f459d0e8c92d56f50021947d8")
 ```
 
-**Import necessary data:**
+**Import online data:**
 ```{r import_data, message=FALSE, warning=FALSE}
 #Set years to include the last two decades, excluding 2020 due to the COVID-19 pandemic.
 years <- c(2005:2019, 2021:2024)
@@ -262,15 +277,12 @@ mortgage_annual <- mortgage_raw %>%
   )
 ```
 
-```{r}
+**Import local data:**
+```{r import_local_data, message=FALSE, warning=FALSE}
 # Import Local Data
 fhfa_raw <- read_csv("DaAn Midterm/hpi_at_state (1).csv", col_names = FALSE) %>%
   setNames(c("state", "year", "quarter", "hpi"))
 
-names(fhfa_raw)
-```
-
-```{r}
 # Set HPI data by state/year
 fhfa_annual <- fhfa_raw %>%
   clean_names() %>%
@@ -283,9 +295,7 @@ fhfa_annual <- fhfa_raw %>%
 
 hpi_annual <- fhfa_annual %>%
   mutate(state = state.name[match(state, state.abb)])
-```
 
-```{r}
 # Import local unemployment data
 bls_data <- read_delim("DaAn Midterm/la.data.2.AllStatesU.txt", delim = "\t") %>%
   clean_names()
