@@ -400,7 +400,7 @@ cat("Variance:", var(merged$unemployment_rate))
 ## **Create Visualizations**
 
 ### **Plot histograms of key variables:**
-```{r figure_1, echo=FALSE, message=FALSE}
+```{r figure_1, echo=FALSE, message=FALSE, warning = FALSE}
 # Histogram plots of key variables
 merged %>%
   select(

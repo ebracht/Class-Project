@@ -564,9 +564,6 @@ merged <- left_join(
 
 ### **Plot histograms of key variables:**
 
-    ## Warning: Removed 57 rows containing non-finite outside the scale range
-    ## (`stat_bin()`).
-
 ![](README_files/figure-gfm/figure_1-1.png)<!-- -->
 
 ### **Plot mortgage rate and national average home ownership rate:**
