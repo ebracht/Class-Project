@@ -9,6 +9,7 @@ Class Project
 
 ## Checkpoint 1: Progress on Eight Major Tasks
 
+<<<<<<< HEAD
 **1) Propose a research topic**
 
 > Each team member proposed a thoughtful research topic along with
@@ -19,10 +20,23 @@ Class Project
 > data from the U.S. Census Bureau, FRED, and BLS. We will organize our
 > findings to Scott Turner, Secretary of Housing and Urban Development
 > (HUD), to inform U.S. housing policy decisions.
+=======
+**1) Propose a research topic (Option 1 or Option 2)**
+
+Each team member proposed a thoughtful research topic along with
+relevant data sources. After deliberation (see meeting minutes below),
+our team chose to study how mortgage rates influence homeownership rates
+across the U.S. To study this topic, our team is constructing a panel
+dataset comprised of several reliable data sources including data from
+the U.S. Census Bureau, FRED, and BLS. We will organize our findings to
+Scott Turner, Secretary of Housing and Urban Development (HUD), to
+inform U.S. housing policy decisions.
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
 
 **2) Create a GitHub repository and establish best practices for team
 collaboration**
 
+<<<<<<< HEAD
 > We have created a GitHub repository. Each member has made substantial
 > contributions. Thus far, we have included the following in this
 > repository: the project topic, meeting minutes, information on the
@@ -54,10 +68,44 @@ collaboration**
 **7) Summarize your findings in a short video presentation**
 
 > We will make progress on this in the coming weeks.
+=======
+We have created a GitHub repository. Each member has made substantial
+contributions. Thus far, we have included the following in this
+repository: the project topic, meeting minutes, information on the
+packages and API keys needed for analysis, code to import relevant data,
+summary statistics for key variables, and several helpful
+visualizations.
+
+**3) Demonstrate merging of multiple data sources**
+
+To construct our panel dataset, we have imported, cleaned, and merged
+several data sources: population and income income data from the Census,
+homeownership data from the Census, the housing price index,
+unemployment data from BLS, and mortgage data from FRED.
+
+**4) Visualize data using Tableau, R, Python, or a combination**
+
+We have used R to create several figures, including line graphs and
+histograms to accompany the summary statistics.
+
+**5) Generate meaningful summary statistic (KPIs) of the data**
+
+We have generated summary statistics for the key variables we intend to
+analyze.
+
+**6) Submit draft of progress at Checkpoint 1 and Checkpoint 2**
+
+This branch is our Checkpoint 1 Submission.
+
+**7) Summarize your findings in a short video presentation**
+
+We will make progress on this in the coming weeks.
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
 
 **8) Publish a detailed, well formatted markdown report of your
 analytical story to your GitHub repository**
 
+<<<<<<< HEAD
 > We have posted this markdown file to our landing page. This will
 > become the basis of our report.
 
@@ -66,6 +114,16 @@ analytical story to your GitHub repository**
 **Our proposed research question is: How have changes in mortgage
 interest rates and housing prices affected home ownership rates across
 U.S. states over time?**
+=======
+We have posted this markdown file to our landing page. This will become
+the basis of our report.
+
+## Research Topic
+
+Our proposed research question is: How have changes in mortgage interest
+rates and housing prices affected homeownership rates across U.S. states
+over time?
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
 
 To study this, we plan to build a panel data set that examines each
 state-year on home ownership rate, housing affordability, mortgage
@@ -119,6 +177,7 @@ recommendations.
 
 ## Meeting Minutes and Personal Contributions
 
+<<<<<<< HEAD
 ### **Meeting 1 (02/25):**
 
 Initial meeting of Liz, Ryan, and Levi; we decided on a weekly meeting
@@ -303,6 +362,169 @@ In advance of Meeting 6, we plan to look into:
 - How home ownership impacts wealth for households, per topic submission
 feedback  
 - Lags in mortgage and home ownership rates
+=======
+**Meeting 1 (02/25):**
+
+Liz, Ryan, and Levi decided on a weekly meeting time, went through the
+requirements for the project, and established a shared doc. We planned
+to each pitch an idea for our next meeting. This did not need to be
+super formal, but we provided a brief description and data source links.
+
+**Meeting 2 (03/04):**
+
+**Ideas**  
+Levi: Minimum Wage/Food Security/Poverty Programs
+
+Description: The Center for Poverty Research compiled an impressive and
+easy-to-use dataset with information on state policies such as the
+minimum wage, SNAP, EITC, and so on. I propose using this dataset to
+measure whether/how these policies have influenced variables of interest
+such as poverty, employment, or food insecurity. The data set is fairly
+comprehensive (part of the appeal), but I think it would be easy to find
+opportunities to supplement it with other datasets. For example, the
+food insecurity data in the Center for Poverty Research dataset only
+goes up to 2001. If we wanted to look at how state economic policies
+have influenced food insecurity over the past two decades, we would need
+to pull in another dataset. I just filled out an online form offered by
+Feeding America to request access to their food insecurity data
+(available at the state level). They agreed to share it with us, so
+that’s one option. I can think of plenty of other options, too. For
+example, we could pull in Census data (I have experience scraping Census
+data with R using an API key) to analyze whether these policies
+influenced the ratio of people that own vs rent their homes. Generally
+speaking, these analyses would require rigorous controls, so there would
+be ample opportunity to pull in multiple datasets to try and control for
+other factors that may influence these endpoints.
+
+Potential data sources: National Welfare Data: “The Center for Poverty
+Research annually updates our state-level panel data series covering
+population, employment, unemployment, welfare, poverty, and politics.
+Our current update includes information for the majority of the 2024
+calendar year. We will update the remainder when available. These data
+are publicly available to all users.”  
+Link: <https://ukcpr.uky.edu/resources>  
+Feeding America Food Insecurity Data: “Since 2011, Feeding America has
+produced the Map the Meal Gap study, providing estimates of local food
+insecurity and food costs on an annual basis to better understand people
+and places facing hunger and to inform decisions and actions that will
+help us achieve our mission. We do this by generating national and local
+data about food insecurity, translating those data into insights and
+tools like the interactive map below, and engaging partners to help them
+use and improve our data and research in the future.”  
+Link: <https://map.feedingamerica.org/>
+
+Liz: Accessibility to alcohol’s relationship to levels of binge drinking
+in a given (Iowa) county
+
+Description: The Iowa Department of Health and Human Services has
+launched a new campaign called Say “Yes” to Drinking Less Alcohol, to
+combat binge drinking. Aiming to investigate whether factors like
+accessibility to alcohol are correlated to higher levels of binge
+drinking could inform where to best focus future resources and
+interventions. Targeted campaigns and/or subsequent action by Iowa
+Department of Health and Human Services, in conjunction with community
+partners, in areas that show higher levels of average binge drinking
+could aid in the ultimate goal of improving health, safety, and alcohol
+responsibility in Iowa.
+
+Potential data sources: Class Data on Iowa Liquor Sales: would provide
+specific store location as well as county-by-county info and sales
+stats  
+Link:
+<https://data.iowa.gov/Sales-Distribution/Iowa-Liquor-Sales/m3tr-qhgy/about_data>  
+U.S. National Health Stats Ranking: allow for the contextualization of a
+focus on Iowa and make clear the imminent need for further work aimed at
+lowering binge drinking levels; provides national excess drinking
+data.  
+Link:
+<https://www.americashealthrankings.org/explore/measures/ExcessDrink/IA>  
+Behavioral Risk Factor Surveillance System (BRFSS) Data: provides past
+year’s BRFSS data; this is used to measure progress toward health goals
+and is conducted annually in Iowa. Iowa BRFSS survey data supports the
+creation and implementation of public health activities and, per the
+Iowa Health and Human Services website, “aims to reducing chronic
+diseases and other leading causes of death for Iowans.”  
+Link: <https://hhs.iowa.gov/about/data-reports/brfss>
+
+**Ryan: Housing Costs, Interest Rates, and Homeownership in the U.S.**
+
+Description: I am very much okay with doing any research topic, but here
+is another one so that we have a range of options. My idea is to study
+how mortgage interest rates and housing prices affect homeownership
+rates across states. We could combine Census housing data, FRED mortgage
+rates, and FHFA house price indexes to build a panel dataset and
+estimate how changes in borrowing costs and housing prices influence
+homeownership or rent burden over time. One potential research question
+would be: How do changes in mortgage interest rates and housing prices
+affect homeownership rates across U.S. states over time? Data should be
+relatively easy to access and merge. Housing outcomes are influenced by
+many economic factors, so we could add controls like median income,
+unemployment rates, or population growth to isolate the effect of
+interest rates and housing prices. We could explore regional
+differences, like if changes in interest rates affect homeownership
+differently in high-cost housing markets compared to more affordable
+states. We’d probably create a panel dataset that observes states over
+time, so each state-year would be an observation. The panel would track
+how homeownership rates change as mortgage rates, housing prices, and
+other economic variables change.
+
+Potential data sources: Homeownership and Housing Data: The U.S. Census
+Bureau provides state and national data on homeownership rates, housing
+costs, median home values, rent burdens, and other housing market
+indicators. These data are available through FRED.  
+Links:
+<https://fred.stlouisfed.org/searchresults/?st=homeownership%20rates%20by%20state>  
+<https://fred.stlouisfed.org/series/RSAHORUSQ156S> Mortgage Interest
+Rate Data: The Federal Reserve Economic Data (FRED) database provides
+historical mortgage interest rates and other macroeconomic indicators
+that can be merged with housing data to analyze how changes in borrowing
+costs affect housing outcomes.  
+Link: <https://fred.stlouisfed.org/series/MORTGAGE30US>  
+Housing Price Index Data: The Federal Housing Finance Agency (FHFA)
+provides a House Price Index with quarterly and annual data on housing
+price changes at the state and metropolitan levels.  
+Link: <https://www.fhfa.gov/data/hpi/datasets?tab=quarterly-data>
+
+**Discussion:**
+
+Levi pointed out that Ryan’s idea had overlap with the Federal Reserve
+data we had to use for R HW 3. We all agreed to proceed with that idea
+and aimed to think about it in parallel with the homework. We each tried
+to merge data sets to make sure we had the skill to do so.
+
+**Meeting 3 (03/11)**
+
+We agreed to move forward with Ryan’s topic, and prepared for our topic
+submission due 03/13. In preparation for that, we split up the work as
+such:
+
+Ryan will submit the topic by Friday  
+All will work on respective sections (see below).  
+Levi sections: Process of choosing a topic, opportunities to expand. Liz
+sections Policy implications Scott Turner HUD Ryan sections: Topic
+(research question, data sources)
+
+Levi will inform Bangjun (former group member) of the plan to log notes
+in this document rather than send weekly emails  
+Liz will create a GitHub page, will add everyone as collaborators &
+email Prof Chale with a status update about a potential issue  
+Ryan will upload a file joining Census and FRED data, including a loop
+to bring in multiple years of Census data  
+Levi will investigate data availability for controlling for state
+housing policy
+
+**Meeting 4 (03/18)**
+
+Talked through Checkpoint 1 criteria and made the following plan in
+advance of Meeting 4: Work on README/update on Github Updates on
+personal contributions Progress on each checkpoint  
+1 and 2 are completely done  
+Ryan merged some for 3  
+Try to run code that someone else posted on github  
+We can think on/try simple visualizations but seems like we don’t
+actually need anything for a little while  
+Date to keep in mind: April 14th is when project draft is due
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
 
 **Load Required Packages:**
 
@@ -531,6 +753,7 @@ merged <- left_join(
 **Compute HPI summary statistics**
 
     ## Summary statistics for HPI:
+<<<<<<< HEAD
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
     ##   183.5   286.2   365.8   406.6   473.6  1229.7      38
@@ -551,6 +774,28 @@ merged <- left_join(
     ## Variance: NA
 
 **Plot mortgage rate and national average home ownership rate:**
+=======
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+    ##   183.5   286.2   365.8   406.6   473.6  1229.7      38
+
+    ## Standard Deviation: NA
+
+    ## Variance: NA
+
+**Compute Unemployment summary statistics**
+
+    ## Summary statistics for Unemployment:
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+    ##   1.800   3.700   4.800   5.294   6.500  13.500      19
+
+    ## Standard Deviation: NA
+
+    ## Variance: NA
+
+**Plot mortgage rate and national average homeownership rate:**
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
 ![](README_files/figure-gfm/figure_1-1.png)<!-- -->
 
 ``` r

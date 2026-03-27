@@ -6,6 +6,45 @@ output:
     toc_depth: 2
   html_document: default
 ---
+<<<<<<< HEAD
+=======
+
+## Checkpoint 1: Progress on Eight Major Tasks
+**1) Propose a research topic (Option 1 or Option 2)**
+
+Each team member proposed a thoughtful research topic along with relevant data sources. After deliberation (see meeting minutes below), our team chose to study how mortgage rates influence homeownership rates across the U.S. To study this topic, our team is constructing a panel dataset comprised of several reliable data sources including data from the U.S. Census Bureau, FRED, and BLS. We will organize our findings to Scott Turner, Secretary of Housing and Urban Development (HUD), to inform U.S. housing policy decisions.
+  
+**2) Create a GitHub repository and establish best practices for team collaboration**
+
+We have created a GitHub repository. Each member has made substantial contributions. Thus far, we have included the following in this repository: the project topic, meeting minutes, information on the packages and API keys needed for analysis, code to import relevant data, summary statistics for key variables, and several helpful visualizations.
+
+**3) Demonstrate merging of multiple data sources**
+
+To construct our panel dataset, we have imported, cleaned, and merged several data sources: population and income income data from the Census, homeownership data from the Census, the housing price index, unemployment data from BLS, and mortgage data from FRED.
+  
+**4) Visualize data using Tableau, R, Python, or a combination**
+
+We have used R to create several figures, including line graphs and histograms to accompany the summary statistics.
+
+**5) Generate meaningful summary statistic (KPIs) of the data**
+
+We have generated summary statistics for the key variables we intend to analyze.
+
+**6) Submit draft of progress at Checkpoint 1 and Checkpoint 2**
+
+This branch is our Checkpoint 1 Submission.
+
+**7) Summarize your findings in a short video presentation**
+
+We will make progress on this in the coming weeks.
+
+**8) Publish a detailed, well formatted markdown report of your analytical story to your GitHub repository**
+
+We have posted this markdown file to our landing page. This will become the basis of our report.
+
+## Research Topic
+Our proposed research question is: How have changes in mortgage interest rates and housing prices affected homeownership rates across U.S. states over time?
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
 
 ## Checkpoint 1: Progress on Eight Major Tasks 
 **1) Propose a research topic**
@@ -22,9 +61,13 @@ output:
   
 **4) Visualize data using Tableau, R, Python, or a combination**
 
+<<<<<<< HEAD
 >We have used R to create several figures, including line graphs and histograms to accompany the summary statistics.
 
 **5) Generate meaningful summary statistic (KPIs) of the data**
+=======
+## Meeting Minutes and Personal Contributions
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
 
 >We have generated summary statistics for the key variables we intend to analyze.
 
@@ -50,13 +93,18 @@ Once we have established the relationship between mortgage interest rates, housi
 The Secretary of Housing and Urban Development (HUD) manages the Department of Housing and Urban Development, with responsibilities including the creation and oversight of affordable housing policies and programs and advising the President on housing issues. As our ultimate aim is to contribute to improving home ownership rates, we will explore the various economic indicators that may positively or negatively impact this, strategically analyzing these relationships in order to make predictions and recommendations for affecting future policy change. Secretary Turner has the power to act on these recommendations, with his actions guided by a goal of creating affordable housing policy. Our work exploring home ownership rates is well-aligned not only with this goal, but also Turner’s previous efforts on opportunity zones. Thus, Scott Turner is the key figure whom we will focus the implications of our findings toward. We plan to create these visualizations using a mix of software programs (including R and Tableau) to create easily and quickly digestible visualizations that best inform and support our recommendations.
 
 
+<<<<<<< HEAD
 **Sources:**
+=======
+**Meeting 4 (03/18)**
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
 
 - https://fred.stlouisfed.org/series/MORTGAGE30US 
 - https://www.fhfa.gov/data/hpi/datasets?tab=quarterly-data 
 - https://www.census.gov/data.html 
 - https://www.bls.gov/web/laus/laumstrk.htm 
 
+<<<<<<< HEAD
 ## Meeting Minutes and Personal Contributions
 
 ### **Meeting 1 (02/25):** 
@@ -130,6 +178,8 @@ In advance of Meeting 6, we plan to look into:
 - Lags in mortgage and home ownership rates  
 
 
+=======
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
 ```{r clear_environment, include=FALSE}
 remove(list=ls())
 ```
@@ -394,7 +444,11 @@ cat("Standard Deviation:", sd(merged$unemployment_rate))
 cat("Variance:", var(merged$unemployment_rate))
 ```
 
+<<<<<<< HEAD
 **Plot mortgage rate and national average home ownership rate:**
+=======
+**Plot mortgage rate and national average homeownership rate:**
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
 ```{r figure_1, echo=FALSE, message=FALSE, }
 # Average homeownership rate over time
 avg_homeownership_ts <- merged %>%
@@ -408,9 +462,15 @@ avg_homeownership_ts <- merged %>%
 # Plot using fpp3
 p1 <- autoplot(avg_homeownership_ts, avg_homeownership_rate) +
   labs(
+<<<<<<< HEAD
     title = "Average State homeownership Rate Over Time",
     x = "Year",
     y = "homeownership Rate (%)"
+=======
+    title = "Average State Homeownership Rate Over Time",
+    x = "Year",
+    y = "Homeownership Rate (%)"
+>>>>>>> 7b7241bb438bd84c9378dd565320dda1bb725a4b
   )
 
 # Average HPI over time
