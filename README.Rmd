@@ -120,6 +120,7 @@ We talked through the Checkpoint 1 criteria and made the following plan in advan
   
 ### **Meeting 5 (03/25)**
 We discussed our progress on using our collaborative github repo. We also brainstormed ideas about additional potential directions in response to the feedback we received on our topic submission earlier in the week. We then divided up remaining tasks necessary for the Checkpoint 1 submission as follows:  
+
 - Liz: Add remaining (Meeting 5) updates; fix formatting (adjust headers, resolve spacing issues, add bullets, etc.); clean up/formalize wording of notes where necessary
 - Levi: Fill in progress on 8 major tasks and submission  
 - Ryan: Create histogram plots of variable and move to README  
@@ -129,12 +130,13 @@ In advance of Meeting 6, we plan to look into:
 - How home ownership impacts wealth for households, per topic submission feedback  
 - Lags in mortgage and home ownership rates  
 
+## Load Packages, Setup API Keys, Import Data
 
 ```{r clear_environment, include=FALSE}
 remove(list=ls())
 ```
 
-**Load Required Packages:**
+### **Load Required Packages:**
 
 - tidyverse
 - janitor
@@ -177,7 +179,7 @@ check.packages <- function(pkg){
 check.packages(packages)
 ```
 
-**Set API Keys:**
+### **Set API Keys:**
 
 - [tidycensus api key](https://api.census.gov/data/key_signup.html)
 - [fredr api key](https://fred.stlouisfed.org/docs/api/api_key.html)
@@ -186,7 +188,7 @@ census_api_key("894b3464183cec8f6c0fa053eb34d0d878de682e")
 fredr_set_key("8351bf4f459d0e8c92d56f50021947d8")
 ```
 
-**Import online data:**
+### **Import online data:**
 ```{r import_data, message=FALSE, warning=FALSE}
 #Set years to include the last two decades, excluding 2020 due to the COVID-19 pandemic.
 years <- c(2005:2019, 2021:2024)
@@ -272,7 +274,7 @@ mortgage_annual <- mortgage_raw %>%
   )
 ```
 
-**Import local data:**
+### **Import local data:**
 ```{r import_local_data, message=FALSE, warning=FALSE}
 # Import Local Data
 fhfa_raw <- read_csv("DaAn Midterm/hpi_at_state (1).csv", col_names = FALSE) %>%
@@ -325,7 +327,7 @@ state_unemployment <- bls_merged %>%
   arrange(state, year)
 ```
 
-**Merge imported data:**
+## **Merge Data**
 ```{r merge_data, message=FALSE}
 #Merge the data sets by year and state
 merged <- left_join(
@@ -346,7 +348,8 @@ merged <- left_join(
                 by="year") 
 ```
 
-**Compute population summary statistics:**
+## **Compute Summary Statistics**
+### **Compute population summary statistics:**
 ```{r pop_summary_statistics, echo=FALSE, message=FALSE, }
 cat("Summary statistics for population:")
 summary(merged$population)
@@ -354,7 +357,7 @@ cat("Standard Deviation:", sd(merged$population))
 cat("Variance:", var(merged$population))
 ```
 
-**Compute median income summary statistics:**
+### **Compute median income summary statistics:**
 ```{r medinc_summary_statistics, echo=FALSE, message=FALSE, }
 cat("Summary statistics for median income:")
 summary(merged$median_income)
@@ -362,7 +365,7 @@ cat("Standard Deviation:", sd(merged$median_income))
 cat("Variance:", var(merged$median_income))
 ```
 
-**Compute home ownership rate summary statistics:**
+### **Compute home ownership rate summary statistics:**
 ```{r ownrate_summary_statistics, echo=FALSE, message=FALSE, }
 cat("Summary statistics for homeownership rate:")
 summary(merged$homeownership_rate)
@@ -370,7 +373,7 @@ cat("Standard Deviation:", sd(merged$homeownership_rate))
 cat("Variance:", var(merged$homeownership_rate))
 ```
 
-**Compute mortgage rate summary statistics:**
+### **Compute mortgage rate summary statistics:**
 ```{r mortgrate_summary_statistics, echo=FALSE, message=FALSE, }
 cat("Summary statistics for mortgage rate:")
 summary(merged$mortgage_rate)
@@ -378,7 +381,7 @@ cat("Standard Deviation:", sd(merged$mortgage_rate))
 cat("Variance:", var(merged$mortgage_rate))
 ```
 
-**Compute HPI summary statistics**
+### **Compute HPI summary statistics**
 ```{r HPI_summary_statistics, echo=FALSE, message=FALSE, }
 cat("Summary statistics for HPI:")
 summary(merged$hpi)
@@ -386,7 +389,7 @@ cat("Standard Deviation:", sd(merged$hpi))
 cat("Variance:", var(merged$hpi))
 ```
 
-**Compute Unemployment summary statistics**
+### **Compute Unemployment summary statistics**
 ```{r Unemployment_summary_statistics, echo=FALSE, message=FALSE, }
 cat("Summary statistics for Unemployment:")
 summary(merged$unemployment_rate)
@@ -394,8 +397,37 @@ cat("Standard Deviation:", sd(merged$unemployment_rate))
 cat("Variance:", var(merged$unemployment_rate))
 ```
 
-**Plot mortgage rate and national average home ownership rate:**
-```{r figure_1, echo=FALSE, message=FALSE, }
+## **Create Visualizations**
+
+### **Plot histograms of key variables:**
+```{r figure_1, echo=FALSE, message=FALSE}
+# Histogram plots of key variables
+merged %>%
+  select(
+    homeownership_rate,
+    median_income,
+    population,
+    hpi,
+    unemployment_rate
+  ) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "value"
+  ) %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  facet_wrap(~ variable, scales = "free", ncol = 2) +
+  labs(
+    title = "Histograms of Key Variables",
+    x = "Value",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+### **Plot mortgage rate and national average home ownership rate:**
+```{r figure_2, echo=FALSE, message=FALSE, warning = FALSE}
 # Average homeownership rate over time
 avg_homeownership_ts <- merged %>%
   group_by(year) %>%
@@ -445,29 +477,4 @@ p3 <- autoplot(mortgage_ts, mortgage_rate) +
 # Combine all three plots
 p1 / p2 / p3
 
-```
-```{r}
-# Histogram plots of key variables
-merged %>%
-  select(
-    homeownership_rate,
-    median_income,
-    population,
-    hpi,
-    unemployment_rate
-  ) %>%
-  pivot_longer(
-    cols = everything(),
-    names_to = "variable",
-    values_to = "value"
-  ) %>%
-  ggplot(aes(x = value)) +
-  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
-  facet_wrap(~ variable, scales = "free", ncol = 2) +
-  labs(
-    title = "Histograms of Key Variables",
-    x = "Value",
-    y = "Count"
-  ) +
-  theme_minimal()
 ```
