@@ -106,7 +106,7 @@ We finalized our decision to focus on Ryan's proposed topic, and prepared for ou
     - Levi: Process of choosing a topic, opportunities to expand. 
     - Liz: Policy implications Scott Turner HUD 
     - Ryan: Topic (research question, data sources)  
-- Levi will inform Bangjun (former group member) of the plan to log notes in this document rather than continue to send weekly emails  
+- Levi will inform Bangjun (former group member) of the plan to log notes in this document rather than sending weekly emails  
 - Liz will create a GitHub page, will add everyone as collaborators & email Prof Chale with a status update about a potential issue 
 - Ryan will upload a file joining Census and FRED data, including a loop to bring in multiple years of Census data  
 - Levi will investigate data availability for controlling for state housing policy  

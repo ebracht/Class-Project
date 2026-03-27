@@ -265,7 +265,7 @@ the work as such:
   - Liz: Policy implications Scott Turner HUD
   - Ryan: Topic (research question, data sources)  
 - Levi will inform Bangjun (former group member) of the plan to log
-  notes in this document rather than continue to send weekly emails  
+  notes in this document rather than sending weekly emails  
 - Liz will create a GitHub page, will add everyone as collaborators &
   email Prof Chale with a status update about a potential issue
 - Ryan will upload a file joining Census and FRED data, including a loop
