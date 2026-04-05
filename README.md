@@ -6,6 +6,11 @@ Class Project
 - [Research Topic](#research-topic)
 - [Meeting Minutes and Personal
   Contributions](#meeting-minutes-and-personal-contributions)
+- [Load Packages, Setup API Keys, Import
+  Data](#load-packages-setup-api-keys-import-data)
+- [**Merge Data**](#merge-data)
+- [**Compute Summary Statistics**](#compute-summary-statistics)
+- [**Create Visualizations**](#create-visualizations)
 
 ## Checkpoint 1: Progress on Eight Major Tasks
 
@@ -290,11 +295,12 @@ We discussed our progress on using our collaborative github repo. We
 also brainstormed ideas about additional potential directions in
 response to the feedback we received on our topic submission earlier in
 the week. We then divided up remaining tasks necessary for the
-Checkpoint 1 submission as follows:  
+Checkpoint 1 submission as follows:
+
 - Liz: Add remaining (Meeting 5) updates; fix formatting (adjust
-headers, resolve spacing issues, add bullets, etc.); clean up/formalize
-wording of notes where necessary - Levi: Fill in progress on 8 major
-tasks and submission  
+  headers, resolve spacing issues, add bullets, etc.); clean
+  up/formalize wording of notes where necessary
+- Levi: Fill in progress on 8 major tasks and submission  
 - Ryan: Create histogram plots of variable and move to README
 
 In advance of Meeting 6, we plan to look into:  
@@ -304,6 +310,7 @@ In advance of Meeting 6, we plan to look into:
 feedback  
 - Lags in mortgage and home ownership rates
 
+<<<<<<< HEAD
 ### **Meeting 6 (03/30)**
 
 We reviewed the feedback on our Checkpoint 1 submission and the what we
@@ -318,6 +325,11 @@ feedback and begin preparing to work towards Checkpoint 2:
 - All: Try to get more familiar working with datasets we plan to use
 
 **Load Required Packages:**
+=======
+## Load Packages, Setup API Keys, Import Data
+
+### **Load Required Packages:**
+>>>>>>> 30d54ff026df14aea8b4ecae61a788dbaff546eb
 
 - tidyverse
 - janitor
@@ -329,12 +341,12 @@ feedback and begin preparing to work towards Checkpoint 2:
 - tsibble
 - fpp3
 
-**Set API Keys:**
+### **Set API Keys:**
 
 - [tidycensus api key](https://api.census.gov/data/key_signup.html)
 - [fredr api key](https://fred.stlouisfed.org/docs/api/api_key.html)
 
-**Import online data:**
+### **Import online data:**
 
 ``` r
 #Set years to include the last two decades, excluding 2020 due to the COVID-19 pandemic.
@@ -421,7 +433,7 @@ mortgage_annual <- mortgage_raw %>%
   )
 ```
 
-**Import local data:**
+### **Import local data:**
 
 ``` r
 # Import Local Data
@@ -475,7 +487,7 @@ state_unemployment <- bls_merged %>%
   arrange(state, year)
 ```
 
-**Merge imported data:**
+## **Merge Data**
 
 ``` r
 #Merge the data sets by year and state
@@ -497,7 +509,9 @@ merged <- left_join(
                 by="year") 
 ```
 
-**Compute population summary statistics:**
+## **Compute Summary Statistics**
+
+### **Compute population summary statistics:**
 
     ## Summary statistics for population:
 
@@ -508,7 +522,7 @@ merged <- left_join(
 
     ## Variance: 4.849976e+13
 
-**Compute median income summary statistics:**
+### **Compute median income summary statistics:**
 
     ## Summary statistics for median income:
 
@@ -519,7 +533,7 @@ merged <- left_join(
 
     ## Variance: 224320711
 
-**Compute home ownership rate summary statistics:**
+### **Compute home ownership rate summary statistics:**
 
     ## Summary statistics for homeownership rate:
 
@@ -530,7 +544,7 @@ merged <- left_join(
 
     ## Variance: 31.14341
 
-**Compute mortgage rate summary statistics:**
+### **Compute mortgage rate summary statistics:**
 
     ## Summary statistics for mortgage rate:
 
@@ -541,7 +555,7 @@ merged <- left_join(
 
     ## Variance: 1.327514
 
-**Compute HPI summary statistics**
+### **Compute HPI summary statistics**
 
     ## Summary statistics for HPI:
 
@@ -552,7 +566,7 @@ merged <- left_join(
 
     ## Variance: NA
 
-**Compute Unemployment summary statistics**
+### **Compute Unemployment summary statistics**
 
     ## Summary statistics for Unemployment:
 
@@ -563,36 +577,12 @@ merged <- left_join(
 
     ## Variance: NA
 
-**Plot mortgage rate and national average home ownership rate:**
+## **Create Visualizations**
+
+### **Plot histograms of key variables:**
+
 ![](README_files/figure-gfm/figure_1-1.png)<!-- -->
 
-``` r
-# Histogram plots of key variables
-merged %>%
-  select(
-    homeownership_rate,
-    median_income,
-    population,
-    hpi,
-    unemployment_rate
-  ) %>%
-  pivot_longer(
-    cols = everything(),
-    names_to = "variable",
-    values_to = "value"
-  ) %>%
-  ggplot(aes(x = value)) +
-  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
-  facet_wrap(~ variable, scales = "free", ncol = 2) +
-  labs(
-    title = "Histograms of Key Variables",
-    x = "Value",
-    y = "Count"
-  ) +
-  theme_minimal()
-```
+### **Plot mortgage rate and national average home ownership rate:**
 
-    ## Warning: Removed 57 rows containing non-finite outside the scale range
-    ## (`stat_bin()`).
-
-![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](README_files/figure-gfm/figure_2-1.png)<!-- -->
