@@ -304,6 +304,19 @@ In advance of Meeting 6, we plan to look into:
 feedback  
 - Lags in mortgage and home ownership rates
 
+### **Meeting 6 (03/30)**
+
+We reviewed the feedback on our Checkpoint 1 submission and the what we
+need to work on for Checkpoint 2. In advance of our meeting next week,
+we made a list of the following action items to address some of the
+feedback and begin preparing to work towards Checkpoint 2:
+
+- Liz: Import repository to group page and update README
+  - If time, look into using the integrated GitHub Project tool  
+- Levi: In the README include descriptions of where to find files  
+- Ryan: Clean repositor and make image file names more descriptive  
+- All: Try to get more familiar working with datasets we plan to use
+
 **Load Required Packages:**
 
 - tidyverse
