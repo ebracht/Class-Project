@@ -1,16 +1,30 @@
 Class Project
 ================
 
-- [Checkpoint 1: Progress on Eight Major
-  Tasks](#checkpoint-1-progress-on-eight-major-tasks)
-- [Research Topic](#research-topic)
-- [Meeting Minutes and Personal
-  Contributions](#meeting-minutes-and-personal-contributions)
-- [Load Packages, Setup API Keys, Import
-  Data](#load-packages-setup-api-keys-import-data)
-- [**Merge Data**](#merge-data)
-- [**Compute Summary Statistics**](#compute-summary-statistics)
-- [**Create Visualizations**](#create-visualizations)
+- [Table of Contents](#table-of-contents)
+  - [Checkpoint 1: Progress on Eight Major
+    Tasks](#checkpoint-1-progress-on-eight-major-tasks)
+  - [Research Topic](#research-topic)
+  - [Meeting Minutes and Personal
+    Contributions](#meeting-minutes-and-personal-contributions)
+  - [Load Packages, Setup API Keys, Import
+    Data](#load-packages-setup-api-keys-import-data)
+  - [**Compute Summary Statistics**](#compute-summary-statistics)
+  - [**Create Visualizations**](#create-visualizations)
+
+<div class="alert alert-warning">
+
+**This landing page displays the knitted output of our README.rmd file.
+For the code behind the analysis and figures shown below, please consult
+the README.rmd file.**
+
+</div>
+
+<!-- Optional spacer -->
+
+<br>
+
+# Table of Contents
 
 ## Checkpoint 1: Progress on Eight Major Tasks
 
@@ -310,7 +324,8 @@ In advance of Meeting 6, we plan to look into:
 feedback  
 - Lags in mortgage and home ownership rates
 
-<<<<<<< HEAD
+## Load Packages, Setup API Keys, Import Data
+
 ### **Meeting 6 (03/30)**
 
 We reviewed the feedback on our Checkpoint 1 submission and the what we
@@ -324,12 +339,7 @@ feedback and begin preparing to work towards Checkpoint 2:
 - Ryan: Clean repositor and make image file names more descriptive  
 - All: Try to get more familiar working with datasets we plan to use
 
-**Load Required Packages:**
-=======
-## Load Packages, Setup API Keys, Import Data
-
 ### **Load Required Packages:**
->>>>>>> 30d54ff026df14aea8b4ecae61a788dbaff546eb
 
 - tidyverse
 - janitor
@@ -348,165 +358,41 @@ feedback and begin preparing to work towards Checkpoint 2:
 
 ### **Import online data:**
 
-``` r
-#Set years to include the last two decades, excluding 2020 due to the COVID-19 pandemic.
-years <- c(2005:2019, 2021:2024)
-
-#Extract home ownership data from the Census
-homeownership <- map_dfr(
-  years,
-  function(yr) {
-    get_acs(
-      geography = "state",
-      variables = c(
-        total_occupied = "B25003_001",
-        owner_occupied = "B25003_002"
-      ),
-      year = yr,
-      survey = "acs1"
-    ) %>%
-      select(NAME, variable, estimate) %>%
-      pivot_wider(names_from = variable, values_from = estimate) %>%
-      mutate(
-        year = yr,
-        homeownership_rate = 100 * owner_occupied / total_occupied
-      ) %>%
-      transmute(
-        state = NAME,
-        year,
-        homeownership_rate
-      )
-  }
-)
-
-#Extract income data from the Census
-income_list <- map(
-  years,
-  ~ get_acs(
-      geography = "state",
-      variables = "B19013_001",
-      year = .x,
-      survey = "acs1"
-    ) %>%
-      transmute(
-        state = NAME,
-        year = .x,
-        median_income = estimate
-      )
-)
-
-#Bind the income data into a DF
-income <- bind_rows(income_list)
-
-#Extract population data from the Census
-population_list <- map(
-  years,
-  ~ get_acs(
-      geography = "state",
-      variables = "B01003_001",
-      year = .x,
-      survey = "acs1"
-    ) %>%
-      transmute(
-        state = NAME,
-        year = .x,
-        population = estimate
-      )
-)
-
-#Bind the population data into a DF
-population <- bind_rows(population_list)
-
-#Extract mortgage data from FRED
-mortgage_raw <- fredr(
-  series_id = "MORTGAGE30US",
-  observation_start = as.Date("2005-01-01")
-)
-
-#Estimate annual mortgage rates
-mortgage_annual <- mortgage_raw %>%
-  mutate(year = year(date)) %>%
-  group_by(year) %>%
-  summarise(
-    mortgage_rate = mean(value, na.rm = TRUE),
-    .groups = "drop"
-  )
-```
-
 ### **Import local data:**
 
-``` r
-# Import Local Data
-fhfa_raw <- read_csv("DaAn Midterm/hpi_at_state (1).csv", col_names = FALSE) %>%
-  setNames(c("state", "year", "quarter", "hpi"))
-
-# Set HPI data by state/year
-fhfa_annual <- fhfa_raw %>%
-  clean_names() %>%
-  filter(year >= 2005) %>%
-  group_by(state, year) %>%
-  summarise(
-    hpi = mean(hpi, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-hpi_annual <- fhfa_annual %>%
-  mutate(state = state.name[match(state, state.abb)])
-
-# Import local unemployment data
-bls_data <- read_delim("DaAn Midterm/la.data.2.AllStatesU.txt", delim = "\t") %>%
-  clean_names()
-
-bls_series <- read_delim("DaAn Midterm/la.series.txt", delim = "\t") %>%
-  clean_names()
-
-bls_area <- read_delim("DaAn Midterm/la.area", delim = "\t") %>%
-  clean_names()
-
-# Join the actual data to the series
-bls_merged <- bls_data %>%
-  left_join(bls_series, by = "series_id")
-
-# Use key to select code
-bls_merged <- bls_merged %>%
-  left_join(
-    bls_area %>% select(area_code, area_text),
-    by = "area_code"
-  )
-
-# Keep annual-average unemployment rate
-state_unemployment <- bls_merged %>%
-  filter(period == "M13") %>%          # annual average
-  filter(measure_code == "03") %>%     # unemployment rate
-  transmute(
-    state = area_text,
-    year = as.integer(year),
-    unemployment_rate = as.numeric(value)
-  ) %>%
-  filter(state %in% c(state.name, "District of Columbia")) %>%
-  arrange(state, year)
-```
-
-## **Merge Data**
+**Merge imported data:**
 
 ``` r
 #Merge the data sets by year and state
 merged <- left_join(
-  population, 
-  income, 
-  by=c("state", "year")) %>%
+  population,
+  income,
+  by = c("state", "year")
+) %>%
   left_join(
     homeownership,
-    by=c("state", "year")) %>%
-      left_join(
-        hpi_annual,
-        by=c("state", "year")) %>%
-          left_join(
-            state_unemployment, 
-            by = c("state", "year")) %>%
-              left_join(
-                mortgage_annual,
-                by="year") 
+    by = c("state", "year")
+  ) %>%
+  left_join(
+    hpi_annual,
+    by = c("state", "year")
+  ) %>%
+  left_join(
+    state_unemployment,
+    by = c("state", "year")
+  ) %>%
+  left_join(
+    rent_burden,
+    by = c("state", "year")
+  ) %>%
+  left_join(
+    permits_state,
+    by = c("state", "year")
+  ) %>%
+  left_join(
+    mortgage_annual,
+    by = "year"
+  )
 ```
 
 ## **Compute Summary Statistics**
@@ -516,33 +402,33 @@ merged <- left_join(
     ## Summary statistics for population:
 
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-    ##   495226  1773866  4236748  6177740  7053887 39557045
+    ##   495226  1814815  4439766  6341021  7321456 39557045
 
-    ## Standard Deviation: 6964177
+    ## Standard Deviation: 7047104
 
-    ## Variance: 4.849976e+13
+    ## Variance: 4.966168e+13
 
 ### **Compute median income summary statistics:**
 
     ## Summary statistics for median income:
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##   17184   47153   55609   57792   66969  109707
+    ##   32938   47449   55646   58206   66919  104828
 
-    ## Standard Deviation: 14977.34
+    ## Standard Deviation: 13858.12
 
-    ## Variance: 224320711
+    ## Variance: 192047587
 
 ### **Compute home ownership rate summary statistics:**
 
     ## Summary statistics for homeownership rate:
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##   39.12   64.78   67.47   66.54   69.94   76.30
+    ##   52.98   65.03   67.51   66.96   70.01   76.30
 
-    ## Standard Deviation: 5.580628
+    ## Standard Deviation: 4.429418
 
-    ## Variance: 31.14341
+    ## Variance: 19.61974
 
 ### **Compute mortgage rate summary statistics:**
 
@@ -551,31 +437,40 @@ merged <- left_join(
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     ##   2.958   3.936   4.545   4.864   6.027   6.807
 
-    ## Standard Deviation: 1.152178
+    ## Standard Deviation: 1.152201
 
-    ## Variance: 1.327514
+    ## Variance: 1.327568
 
 ### **Compute HPI summary statistics**
 
     ## Summary statistics for HPI:
 
-    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-    ##   183.5   286.2   365.8   406.6   473.6  1229.7      38
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   183.5   286.2   365.8   406.6   473.6  1229.7
 
-    ## Standard Deviation: NA
+    ## Standard Deviation: 163.7395
 
-    ## Variance: NA
+    ## Variance: 26810.63
 
-### **Compute Unemployment summary statistics**
+### **Compute unemployment summary statistics**
 
     ## Summary statistics for Unemployment:
 
-    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-    ##   1.800   3.700   4.800   5.294   6.500  13.500      19
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   1.800   3.700   4.700   5.262   6.500  13.500
 
-    ## Standard Deviation: NA
+    ## Standard Deviation: 2.131641
 
-    ## Variance: NA
+    ## Variance: 4.543892
+
+### **Compute rent burden summary statistics:**
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   28.27   41.79   44.88   44.62   47.51   58.14
+
+    ## Standard Deviation: 4.371337
+
+    ## Variance: 19.10859
 
 ## **Create Visualizations**
 
@@ -583,6 +478,221 @@ merged <- left_join(
 
 ![](README_files/figure-gfm/figure_1-1.png)<!-- -->
 
-### **Plot mortgage rate and national average home ownership rate:**
+### **Plot mortgage rate and national average homeownership rate:**
 
 ![](README_files/figure-gfm/figure_2-1.png)<!-- -->
+
+### **Correlation Matrix:**
+
+![](README_files/figure-gfm/figure_3-1.png)<!-- -->
+
+### Missingness check:
+
+    ## # A tibble: 8 × 2
+    ##   variable           missing_count
+    ##   <chr>                      <int>
+    ## 1 homeownership_rate             0
+    ## 2 median_income                  0
+    ## 3 population                     0
+    ## 4 hpi                            0
+    ## 5 unemployment_rate              0
+    ## 6 mortgage_rate                  0
+    ## 7 rent_burden                    0
+    ## 8 housing_permits                0
+
+### Other plots:
+
+![](README_files/figure-gfm/figure_4-1.png)<!-- -->
+
+![](README_files/figure-gfm/figure_5-1.png)<!-- --> \## Analysis \###
+Multicollinearity check:
+
+    ##     mortgage_rate               hpi unemployment_rate     median_income 
+    ##          1.169683          3.552392          2.047872          3.075912 
+    ##       rent_burden   housing_permits 
+    ##          2.289029          1.229762
+
+### Merged + Lag variables:
+
+### Regression Analysis
+
+For directions on how to conduct multilinear regression and plot
+confidence intervals, [click
+here](https://www.geeksforgeeks.org/r-language/how-to-use-the-coeftest-function-in-r/).
+
+``` r
+#Create a simple multilinear regression model
+model1 <- lm(homeownership_rate ~ mortgage_rate + hpi + median_income +
+               unemployment_rate + state + year, data = merged )
+
+#Summarize model
+summary(model1)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = homeownership_rate ~ mortgage_rate + hpi + median_income + 
+    ##     unemployment_rate + state + year, data = merged)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -3.3732 -0.6241 -0.0287  0.5922  4.4400 
+    ## 
+    ## Coefficients:
+    ##                       Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)          5.492e+02  4.970e+01  11.050  < 2e-16 ***
+    ## mortgage_rate        2.360e-01  4.561e-02   5.175 2.81e-07 ***
+    ## hpi                  7.519e-03  9.515e-04   7.903 7.98e-15 ***
+    ## median_income        3.883e-05  1.943e-05   1.998   0.0460 *  
+    ## unemployment_rate   -3.007e-02  2.254e-02  -1.334   0.1825    
+    ## stateAlaska         -5.960e+00  6.077e-01  -9.807  < 2e-16 ***
+    ## stateArizona        -4.900e+00  3.631e-01 -13.495  < 2e-16 ***
+    ## stateArkansas       -2.696e+00  3.397e-01  -7.937 6.16e-15 ***
+    ## stateCalifornia     -1.682e+01  4.476e-01 -37.581  < 2e-16 ***
+    ## stateColorado       -5.579e+00  4.418e-01 -12.628  < 2e-16 ***
+    ## stateConnecticut    -4.314e+00  5.504e-01  -7.839 1.28e-14 ***
+    ## stateDelaware        7.726e-01  4.087e-01   1.890   0.0591 .  
+    ## stateFlorida        -3.603e+00  3.472e-01 -10.380  < 2e-16 ***
+    ## stateGeorgia        -5.074e+00  3.665e-01 -13.845  < 2e-16 ***
+    ## stateHawaii         -1.364e+01  5.035e-01 -27.091  < 2e-16 ***
+    ## stateIdaho          -1.771e-01  3.477e-01  -0.509   0.6106    
+    ## stateIllinois       -2.991e+00  4.307e-01  -6.945 7.30e-12 ***
+    ## stateIndiana         5.356e-01  3.657e-01   1.465   0.1434    
+    ## stateIowa            2.209e+00  3.941e-01   5.604 2.79e-08 ***
+    ## stateKansas         -2.052e+00  3.925e-01  -5.229 2.12e-07 ***
+    ## stateKentucky       -1.335e+00  3.384e-01  -3.945 8.61e-05 ***
+    ## stateLouisiana      -2.364e+00  3.408e-01  -6.936 7.73e-12 ***
+    ## stateMaine           9.413e-01  3.660e-01   2.572   0.0103 *  
+    ## stateMaryland       -4.444e+00  6.005e-01  -7.401 3.12e-13 ***
+    ## stateMassachusetts  -1.113e+01  4.809e-01 -23.141  < 2e-16 ***
+    ## stateMichigan        2.751e+00  3.644e-01   7.550 1.07e-13 ***
+    ## stateMinnesota       2.044e+00  4.658e-01   4.388 1.28e-05 ***
+    ## stateMississippi     2.517e-01  3.449e-01   0.730   0.4656    
+    ## stateMissouri       -1.510e+00  3.510e-01  -4.303 1.87e-05 ***
+    ## stateMontana        -2.084e+00  3.448e-01  -6.044 2.20e-09 ***
+    ## stateNebraska       -2.966e+00  3.923e-01  -7.561 9.88e-14 ***
+    ## stateNevada         -1.242e+01  3.905e-01 -31.808  < 2e-16 ***
+    ## stateNew Hampshire  -9.292e-02  5.086e-01  -0.183   0.8551    
+    ## stateNew Jersey     -7.497e+00  5.569e-01 -13.462  < 2e-16 ***
+    ## stateNew Mexico     -1.013e+00  3.381e-01  -2.998   0.0028 ** 
+    ## stateNew York       -1.854e+01  4.041e-01 -45.874  < 2e-16 ***
+    ## stateNorth Carolina -3.891e+00  3.435e-01 -11.327  < 2e-16 ***
+    ## stateNorth Dakota   -5.600e+00  3.999e-01 -14.005  < 2e-16 ***
+    ## stateOhio           -2.220e+00  3.660e-01  -6.066 1.93e-09 ***
+    ## stateOklahoma       -2.691e+00  3.564e-01  -7.551 1.06e-13 ***
+    ## stateOregon         -8.588e+00  3.644e-01 -23.569  < 2e-16 ***
+    ## statePennsylvania   -1.088e+00  3.642e-01  -2.987   0.0029 ** 
+    ## stateRhode Island   -1.033e+01  3.893e-01 -26.537  < 2e-16 ***
+    ## stateSouth Carolina -2.281e-01  3.406e-01  -0.670   0.5032    
+    ## stateSouth Dakota   -1.826e+00  3.596e-01  -5.079 4.62e-07 ***
+    ## stateTennessee      -2.533e+00  3.396e-01  -7.458 2.07e-13 ***
+    ## stateTexas          -6.893e+00  3.984e-01 -17.303  < 2e-16 ***
+    ## stateUtah           -9.795e-01  4.486e-01  -2.184   0.0293 *  
+    ## stateVermont         1.306e-01  3.694e-01   0.354   0.7238    
+    ## stateVirginia       -4.302e+00  4.727e-01  -9.102  < 2e-16 ***
+    ## stateWashington     -8.659e+00  4.336e-01 -19.971  < 2e-16 ***
+    ## stateWest Virginia   4.883e+00  3.428e-01  14.245  < 2e-16 ***
+    ## stateWisconsin      -2.072e+00  3.839e-01  -5.397 8.69e-08 ***
+    ## stateWyoming         2.286e-01  4.176e-01   0.547   0.5842    
+    ## year                -2.408e-01  2.494e-02  -9.655  < 2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 1.042 on 895 degrees of freedom
+    ## Multiple R-squared:  0.9478, Adjusted R-squared:  0.9447 
+    ## F-statistic: 301.2 on 54 and 895 DF,  p-value: < 2.2e-16
+
+``` r
+#Create coefficients and standard errors
+coefficients <- coef(model1)[c("mortgage_rate", "hpi", "median_income", "unemployment_rate")]
+std_errors <- sqrt(diag(vcov(model1)))[c("mortgage_rate", "hpi", "median_income", "unemployment_rate")]
+
+#Create data needed to plot confidence intervals
+plot_data <- data.frame(
+  Coefficient = names(coefficients),
+  Estimate = coefficients,
+  Std_Error = std_errors
+)
+
+#create plot of coefficients and confidence interval
+ggplot(plot_data, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error,
+                                           ymax = Estimate + 1.96 * Std_Error)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  labs(title = "Coefficients and Confidence Intervals",
+       x = "Coefficient",
+       y = "Estimate") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+![](README_files/figure-gfm/regression-1.png)<!-- -->
+
+``` r
+#Calculate clustered standard errors
+model1_cluster_se <- vcovCL(model1, cluster = ~ state)
+summary_clustered <- coeftest(model1, vcov = model1_cluster_se)
+print(summary_clustered)
+```
+
+    ## 
+    ## t test of coefficients:
+    ## 
+    ##                        Estimate  Std. Error  t value  Pr(>|t|)    
+    ## (Intercept)          5.4920e+02  1.0415e+02   5.2732 1.682e-07 ***
+    ## mortgage_rate        2.3603e-01  7.5758e-02   3.1156  0.001894 ** 
+    ## hpi                  7.5194e-03  1.5270e-03   4.9242 1.008e-06 ***
+    ## median_income        3.8827e-05  3.4504e-05   1.1253  0.260772    
+    ## unemployment_rate   -3.0071e-02  2.4914e-02  -1.2070  0.227747    
+    ## stateAlaska         -5.9599e+00  8.9681e-01  -6.6457 5.238e-11 ***
+    ## stateArizona        -4.8996e+00  2.8845e-01 -16.9859 < 2.2e-16 ***
+    ## stateArkansas       -2.6962e+00  8.7343e-02 -30.8691 < 2.2e-16 ***
+    ## stateCalifornia     -1.6823e+01  7.0769e-01 -23.7719 < 2.2e-16 ***
+    ## stateColorado       -5.5792e+00  6.0805e-01  -9.1755 < 2.2e-16 ***
+    ## stateConnecticut    -4.3144e+00  8.4921e-01  -5.0805 4.583e-07 ***
+    ## stateDelaware        7.7257e-01  5.1222e-01   1.5083  0.131840    
+    ## stateFlorida        -3.6034e+00  2.0804e-01 -17.3212 < 2.2e-16 ***
+    ## stateGeorgia        -5.0741e+00  2.7590e-01 -18.3910 < 2.2e-16 ***
+    ## stateHawaii         -1.3642e+01  8.2528e-01 -16.5297 < 2.2e-16 ***
+    ## stateIdaho          -1.7714e-01  2.0804e-01  -0.8515  0.394720    
+    ## stateIllinois       -2.9909e+00  4.9658e-01  -6.0230 2.498e-09 ***
+    ## stateIndiana         5.3559e-01  2.3163e-01   2.3123  0.020988 *  
+    ## stateIowa            2.2087e+00  3.2869e-01   6.7199 3.234e-11 ***
+    ## stateKansas         -2.0523e+00  3.2134e-01  -6.3868 2.719e-10 ***
+    ## stateKentucky       -1.3351e+00  2.3540e-02 -56.7169 < 2.2e-16 ***
+    ## stateLouisiana      -2.3639e+00  7.6224e-02 -31.0121 < 2.2e-16 ***
+    ## stateMaine           9.4125e-01  3.1361e-01   3.0014  0.002762 ** 
+    ## stateMaryland       -4.4440e+00  9.8442e-01  -4.5143 7.200e-06 ***
+    ## stateMassachusetts  -1.1128e+01  8.8037e-01 -12.6404 < 2.2e-16 ***
+    ## stateMichigan        2.7510e+00  2.4275e-01  11.3327 < 2.2e-16 ***
+    ## stateMinnesota       2.0442e+00  5.9812e-01   3.4177  0.000660 ***
+    ## stateMississippi     2.5172e-01  1.4714e-01   1.7108  0.087467 .  
+    ## stateMissouri       -1.5103e+00  1.6923e-01  -8.9247 < 2.2e-16 ***
+    ## stateMontana        -2.0839e+00  1.6172e-01 -12.8858 < 2.2e-16 ***
+    ## stateNebraska       -2.9662e+00  3.2584e-01  -9.1033 < 2.2e-16 ***
+    ## stateNevada         -1.2420e+01  3.7504e-01 -33.1170 < 2.2e-16 ***
+    ## stateNew Hampshire  -9.2924e-02  7.6879e-01  -0.1209  0.903821    
+    ## stateNew Jersey     -7.4973e+00  9.4158e-01  -7.9624 5.101e-15 ***
+    ## stateNew Mexico     -1.0135e+00  2.3511e-02 -43.1050 < 2.2e-16 ***
+    ## stateNew York       -1.8538e+01  5.7499e-01 -32.2408 < 2.2e-16 ***
+    ## stateNorth Carolina -3.8906e+00  1.4829e-01 -26.2371 < 2.2e-16 ***
+    ## stateNorth Dakota   -5.6003e+00  3.5627e-01 -15.7190 < 2.2e-16 ***
+    ## stateOhio           -2.2203e+00  2.3243e-01  -9.5524 < 2.2e-16 ***
+    ## stateOklahoma       -2.6913e+00  1.6765e-01 -16.0525 < 2.2e-16 ***
+    ## stateOregon         -8.5884e+00  3.5451e-01 -24.2261 < 2.2e-16 ***
+    ## statePennsylvania   -1.0877e+00  3.1288e-01  -3.4762  0.000533 ***
+    ## stateRhode Island   -1.0332e+01  5.0122e-01 -20.6137 < 2.2e-16 ***
+    ## stateSouth Carolina -2.2810e-01  1.0721e-01  -2.1277  0.033639 *  
+    ## stateSouth Dakota   -1.8265e+00  2.1423e-01  -8.5259 < 2.2e-16 ***
+    ## stateTennessee      -2.5327e+00  8.5846e-02 -29.5030 < 2.2e-16 ***
+    ## stateTexas          -6.8934e+00  3.5674e-01 -19.3232 < 2.2e-16 ***
+    ## stateUtah           -9.7952e-01  5.9472e-01  -1.6470  0.099904 .  
+    ## stateVermont         1.3059e-01  3.6384e-01   0.3589  0.719741    
+    ## stateVirginia       -4.3022e+00  6.7515e-01  -6.3722 2.978e-10 ***
+    ## stateWashington     -8.6586e+00  6.4678e-01 -13.3874 < 2.2e-16 ***
+    ## stateWest Virginia   4.8828e+00  1.4038e-01  34.7829 < 2.2e-16 ***
+    ## stateWisconsin      -2.0719e+00  3.3845e-01  -6.1219 1.382e-09 ***
+    ## stateWyoming         2.2864e-01  4.2060e-01   0.5436  0.586854    
+    ## year                -2.4076e-01  5.2264e-02  -4.6066 4.687e-06 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1

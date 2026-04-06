@@ -7,6 +7,15 @@ output:
   html_document: default
 ---
 
+::: {.alert .alert-warning}
+**This landing page displays the knitted output of our README.rmd file. For the code behind the analysis and figures shown below, please consult the README.rmd file.**
+:::
+
+<!-- Optional spacer -->
+<br>
+
+# Table of Contents
+
 ## Checkpoint 1: Progress on Eight Major Tasks 
 **1) Propose a research topic**
 
@@ -176,7 +185,10 @@ packages <- c(
   # time series structure and analysis
   "tsibble",
   "fpp3",
-  "patchwork"
+  "patchwork",
+  # regression
+  "sandwich",
+  "lmtest"
 )
 
 # checks if package available (if not - install packages)
@@ -200,7 +212,7 @@ fredr_set_key("8351bf4f459d0e8c92d56f50021947d8")
 ```
 
 ### **Import online data:**
-```{r import_data, message=FALSE, warning=FALSE}
+```{r import_data, message=FALSE, warning=FALSE, include=FALSE}
 #Set years to include the last two decades, excluding 2020 due to the COVID-19 pandemic.
 years <- c(2005:2019, 2021:2024)
 
@@ -269,10 +281,75 @@ population_list <- map(
 #Bind the population data into a DF
 population <- bind_rows(population_list)
 
+# Rent burden from ACS table B25070
+# Defined as share of renter households paying 30% or more of income toward gross rent
+rent_burden <- map_dfr(
+  years,
+  function(yr) {
+    get_acs(
+      geography = "state",
+      table = "B25070",
+      year = yr,
+      survey = "acs1"
+    ) %>%
+      select(NAME, variable, estimate) %>%
+      mutate(year = yr) %>%
+      pivot_wider(names_from = variable, values_from = estimate) %>%
+      transmute(
+        state = NAME,
+        year,
+        rent_burden = 100 * (
+          B25070_007 + B25070_008 + B25070_009 + B25070_010
+        ) / B25070_001
+      )
+  }
+)
+
+# Housing supply from Census Building Permits Survey
+# Read directly from Census-hosted Excel file
+permits_url <- "https://www.census.gov/construction/bps/xls/annualhistorybystate.xls"
+
+tmp_permits <- tempfile(fileext = ".xls")
+download.file(permits_url, tmp_permits, mode = "wb")
+
+sheet_names <- excel_sheets(tmp_permits)
+sheet_names <- sheet_names[sheet_names != "PR"]
+
+permits_state <- map_dfr(
+  sheet_names,
+  function(sh) {
+    read_excel(
+      tmp_permits,
+      sheet = sh,
+      skip = 5,
+      col_names = FALSE
+    ) %>%
+      select(1:5) %>%
+      setNames(c(
+        "universe",
+        "year",
+        "total_buildings",
+        "housing_permits",
+        "total_valuation"
+      )) %>%
+      filter(
+        !is.na(year),
+        str_detect(as.character(year), "^[0-9]{4}$")
+      ) %>%
+      transmute(
+        state = state.name[match(sh, state.abb)],
+        year = as.integer(year),
+        housing_permits = readr::parse_number(as.character(housing_permits))
+      ) %>%
+      filter(year %in% years)
+  }
+)
+
 #Extract mortgage data from FRED
 mortgage_raw <- fredr(
   series_id = "MORTGAGE30US",
-  observation_start = as.Date("2005-01-01")
+  observation_start = as.Date("2005-01-01"),
+  observation_end = Sys.Date()
 )
 
 #Estimate annual mortgage rates
@@ -286,7 +363,7 @@ mortgage_annual <- mortgage_raw %>%
 ```
 
 ### **Import local data:**
-```{r import_local_data, message=FALSE, warning=FALSE}
+```{r import_local_data, message=FALSE, warning=FALSE, include=FALSE}
 # Import Local Data
 fhfa_raw <- read_csv("Data/hpi_at_state (1).csv", col_names = FALSE) %>%
   setNames(c("state", "year", "quarter", "hpi"))
@@ -338,76 +415,6 @@ state_unemployment <- bls_merged %>%
   arrange(state, year)
 ```
 
-## **Merge Data**
-```{r add_controls, message=FALSE, warning=FALSE}
-# Rent burden from ACS table B25070
-# Defined as share of renter households paying 30% or more of income toward gross rent
-
-rent_burden <- map_dfr(
-  years,
-  function(yr) {
-    get_acs(
-      geography = "state",
-      table = "B25070",
-      year = yr,
-      survey = "acs1"
-    ) %>%
-      select(NAME, variable, estimate) %>%
-      mutate(year = yr) %>%
-      pivot_wider(names_from = variable, values_from = estimate) %>%
-      transmute(
-        state = NAME,
-        year,
-        rent_burden = 100 * (
-          B25070_007 + B25070_008 + B25070_009 + B25070_010
-        ) / B25070_001
-      )
-  }
-)
-```
-
-```{r, echo=FALSE, message=FALSE,}
-# Housing supply from Census Building Permits Survey
-# Read directly from Census-hosted Excel file
-permits_url <- "https://www.census.gov/construction/bps/xls/annualhistorybystate.xls"
-
-tmp_permits <- tempfile(fileext = ".xls")
-download.file(permits_url, tmp_permits, mode = "wb")
-
-sheet_names <- excel_sheets(tmp_permits)
-sheet_names <- sheet_names[sheet_names != "PR"]
-
-permits_state <- map_dfr(
-  sheet_names,
-  function(sh) {
-    read_excel(
-      tmp_permits,
-      sheet = sh,
-      skip = 5,
-      col_names = FALSE
-    ) %>%
-      select(1:5) %>%
-      setNames(c(
-        "universe",
-        "year",
-        "total_buildings",
-        "housing_permits",
-        "total_valuation"
-      )) %>%
-      filter(
-        !is.na(year),
-        str_detect(as.character(year), "^[0-9]{4}$")
-      ) %>%
-      transmute(
-        state = state.name[match(sh, state.abb)],
-        year = as.integer(year),
-        housing_permits = readr::parse_number(as.character(housing_permits))
-      ) %>%
-      filter(year %in% years)
-  }
-)
-```
-
 **Merge imported data:**
 ```{r merge_data, message=FALSE}
 #Merge the data sets by year and state
@@ -443,16 +450,13 @@ merged <- left_join(
 ```
 
 ## **Compute Summary Statistics**
-### **Compute population summary statistics:**
-```{r}
+```{r excludeDCandPR, echo=FALSE, message=FALSE, }
 merged <- merged %>%
   filter(!state %in% c("Puerto Rico", "District of Columbia"))
 ```
-## Exploratory Data Analysis:
-### Summary Statistics:
 
 ### **Compute population summary statistics:**
-```{r pop_summary_statistics, echo=FALSE, message=FALSE, }
+```{r pop_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for population:")
 summary(merged$population)
 cat("Standard Deviation:", sd(merged$population))
@@ -460,7 +464,7 @@ cat("Variance:", var(merged$population))
 ```
 
 ### **Compute median income summary statistics:**
-```{r medinc_summary_statistics, echo=FALSE, message=FALSE, }
+```{r medinc_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for median income:")
 summary(merged$median_income)
 cat("Standard Deviation:", sd(merged$median_income))
@@ -468,7 +472,7 @@ cat("Variance:", var(merged$median_income))
 ```
 
 ### **Compute home ownership rate summary statistics:**
-```{r ownrate_summary_statistics, echo=FALSE, message=FALSE, }
+```{r ownrate_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for homeownership rate:")
 summary(merged$homeownership_rate)
 cat("Standard Deviation:", sd(merged$homeownership_rate))
@@ -476,7 +480,7 @@ cat("Variance:", var(merged$homeownership_rate))
 ```
 
 ### **Compute mortgage rate summary statistics:**
-```{r mortgrate_summary_statistics, echo=FALSE, message=FALSE, }
+```{r mortgrate_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for mortgage rate:")
 summary(merged$mortgage_rate)
 cat("Standard Deviation:", sd(merged$mortgage_rate))
@@ -484,19 +488,25 @@ cat("Variance:", var(merged$mortgage_rate))
 ```
 
 ### **Compute HPI summary statistics**
-```{r HPI_summary_statistics, echo=FALSE, message=FALSE, }
+```{r HPI_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for HPI:")
 summary(merged$hpi)
 cat("Standard Deviation:", sd(merged$hpi))
 cat("Variance:", var(merged$hpi))
 ```
 
-### **Compute Unemployment summary statistics**
-```{r Unemployment_summary_statistics, echo=FALSE, message=FALSE, }
+### **Compute unemployment summary statistics**
+```{r Unemployment_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for Unemployment:")
 summary(merged$unemployment_rate)
 cat("Standard Deviation:", sd(merged$unemployment_rate))
 cat("Variance:", var(merged$unemployment_rate))
+```
+### **Compute rent burden summary statistics:**
+```{r rent_burden_summary_stats, echo=FALSE, message=FALSE, warning = FALSE}
+summary(merged$rent_burden)
+cat("Standard Deviation:", sd(merged$rent_burden, na.rm = TRUE))
+cat("Variance:", var(merged$rent_burden, na.rm = TRUE))
 ```
 
 ## **Create Visualizations**
@@ -528,16 +538,8 @@ merged %>%
   theme_minimal()
 ```
 
-### **Plot mortgage rate and national average home ownership rate:**
-```{r figure_2, echo=FALSE, message=FALSE, warning = FALSE}
-summary(merged$rent_burden)
-cat("Standard Deviation:", sd(merged$rent_burden, na.rm = TRUE))
-cat("Variance:", var(merged$rent_burden, na.rm = TRUE))
-```
-
-
 ### **Plot mortgage rate and national average homeownership rate:**
-```{r figure_1, echo=FALSE, message=FALSE, }
+```{r figure_2, echo=FALSE, message=FALSE, }
 # Average homeownership rate over time
 avg_homeownership_ts <- merged %>%
   group_by(year) %>%
@@ -590,7 +592,7 @@ p1 / p2 / p3
 ```
 
 ### **Correlation Matrix:**
-```{r}
+```{r figure_3, echo=FALSE, message=FALSE, }
 corr_data <- merged %>%
   select(
     homeownership_rate,
@@ -639,7 +641,7 @@ ggplot(corr_df, aes(x = Var1, y = Var2, fill = Freq)) +
 ```
 
 ### Missingness check:
-```{r}
+```{r missing_check, echo=FALSE, message=FALSE, }
 merged %>%
   summarise(
     across(
@@ -663,7 +665,7 @@ merged %>%
   )
 ```
 ### Other plots:
-```{r}
+```{r figure_4, echo=FALSE, message=FALSE, }
 merged %>%
   select(
     homeownership_rate,
@@ -691,7 +693,7 @@ merged %>%
   theme_minimal()
 ```
 
-```{r}
+```{r figure_5, echo=FALSE, message=FALSE, }
 merged %>%
   ggplot(aes(x = reorder(state, homeownership_rate, median), y = homeownership_rate)) +
   geom_boxplot(fill = "steelblue", alpha = 0.7) +
@@ -703,8 +705,9 @@ merged %>%
   ) +
   theme_minimal()
 ```
-## Multicollinearity check:
-```{r}
+## Analysis
+### Multicollinearity check:
+```{r multicollinearity_check, echo=FALSE, message=FALSE, }
 vif_model <- lm(
   homeownership_rate ~ mortgage_rate + hpi + unemployment_rate +
     median_income + rent_burden + housing_permits,
@@ -715,13 +718,58 @@ vif(vif_model)
 ```
 
 ### Merged + Lag variables:
-```{r}
+```{r lag_variables, echo=FALSE, message=FALSE, }
 merged <- merged %>%
   arrange(state, year) %>%
   group_by(state) %>%
   mutate(
     mortgage_rate_lag1 = lag(mortgage_rate, 1),
-    hpi_lag1 = lag(hpi, 1)
+    mortgage_rate_lag2 = lag(mortgage_rate, 2),
+    mortgage_rate_lag3 = lag(mortgage_rate, 3),
+    hpi_lag1 = lag(hpi, 1),
+    hpi_lag2 = lag(hpi, 2),
+    hpi_lag3 = lag(hpi, 3)
   ) %>%
   ungroup()
+```
+
+### Regression Analysis
+For directions on how to conduct multilinear regression and plot confidence intervals, [click here](https://www.geeksforgeeks.org/r-language/how-to-use-the-coeftest-function-in-r/).
+
+```{r regression, message=FALSE, }
+#Create a simple multilinear regression model
+model1 <- lm(homeownership_rate ~ mortgage_rate + hpi + median_income +
+               unemployment_rate + state + year, data = merged )
+
+#Summarize model
+summary(model1)
+
+#Create coefficients and standard errors
+coefficients <- coef(model1)[c("mortgage_rate", "hpi", "median_income", "unemployment_rate")]
+std_errors <- sqrt(diag(vcov(model1)))[c("mortgage_rate", "hpi", "median_income", "unemployment_rate")]
+
+#Create data needed to plot confidence intervals
+plot_data <- data.frame(
+  Coefficient = names(coefficients),
+  Estimate = coefficients,
+  Std_Error = std_errors
+)
+
+#create plot of coefficients and confidence interval
+ggplot(plot_data, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error,
+                                           ymax = Estimate + 1.96 * Std_Error)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  labs(title = "Coefficients and Confidence Intervals",
+       x = "Coefficient",
+       y = "Estimate") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#Calculate clustered standard errors
+model1_cluster_se <- vcovCL(model1, cluster = ~ state)
+summary_clustered <- coeftest(model1, vcov = model1_cluster_se)
+print(summary_clustered)
+
+
 ```
