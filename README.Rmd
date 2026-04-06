@@ -7,14 +7,8 @@ output:
   html_document: default
 ---
 
-::: {.alert .alert-warning}
-**This landing page displays the knitted output of our README.rmd file. For the code behind the analysis and figures shown below, please consult the README.rmd file.**
-:::
 
-<!-- Optional spacer -->
-<br>
-
-# Table of Contents
+### **This landing page displays the knitted output of our README.rmd file. For the code behind the analysis and figures shown below, please consult the README.rmd file.**
 
 ## Checkpoint 1: Progress on Eight Major Tasks 
 **1) Propose a research topic**
@@ -640,7 +634,7 @@ ggplot(corr_df, aes(x = Var1, y = Var2, fill = Freq)) +
   )
 ```
 
-### Missingness check:
+### **Missingness check:**
 ```{r missing_check, echo=FALSE, message=FALSE, }
 merged %>%
   summarise(
@@ -664,7 +658,7 @@ merged %>%
     values_to = "missing_count"
   )
 ```
-### Other plots:
+### **Other plots:**
 ```{r figure_4, echo=FALSE, message=FALSE, }
 merged %>%
   select(
@@ -705,8 +699,8 @@ merged %>%
   ) +
   theme_minimal()
 ```
-## Analysis
-### Multicollinearity check:
+## **Analysis**
+### **Multicollinearity check:**
 ```{r multicollinearity_check, echo=FALSE, message=FALSE, }
 vif_model <- lm(
   homeownership_rate ~ mortgage_rate + hpi + unemployment_rate +
@@ -717,7 +711,6 @@ vif_model <- lm(
 vif(vif_model)
 ```
 
-### Merged + Lag variables:
 ```{r lag_variables, echo=FALSE, message=FALSE, }
 merged <- merged %>%
   arrange(state, year) %>%
@@ -733,16 +726,17 @@ merged <- merged %>%
   ungroup()
 ```
 
-### Regression Analysis
+### **Regression Analysis**
 For directions on how to conduct multilinear regression and plot confidence intervals, [click here](https://www.geeksforgeeks.org/r-language/how-to-use-the-coeftest-function-in-r/).
 
-```{r regression, message=FALSE, }
+#### **Model 1**
+```{r regression_1, echo=FALSE, message=FALSE, }
 #Create a simple multilinear regression model
 model1 <- lm(homeownership_rate ~ mortgage_rate + hpi + median_income +
-               unemployment_rate + state + year, data = merged )
+               unemployment_rate + state + as.factor(year), data = merged )
 
 #Summarize model
-summary(model1)
+print(summary(model1))
 
 #Create coefficients and standard errors
 coefficients <- coef(model1)[c("mortgage_rate", "hpi", "median_income", "unemployment_rate")]
@@ -765,11 +759,50 @@ ggplot(plot_data, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * St
        y = "Estimate") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
+#### **Model 1 with Clustered Standard Errors**
+```{r clustered_standarderrors, echo=FALSE, message=FALSE, }
 #Calculate clustered standard errors
 model1_cluster_se <- vcovCL(model1, cluster = ~ state)
 summary_clustered <- coeftest(model1, vcov = model1_cluster_se)
 print(summary_clustered)
 
 
+```
+
+
+#### **Model 2**
+```{r regression_2, echo=FALSE, message=FALSE, }
+#Create a simple multilinear regression model
+model2 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 + 
+               mortgage_rate_lag2 + mortgage_rate_lag3 + hpi + median_income +
+               unemployment_rate + state + as.factor(year), data = merged )
+
+#Summarize model
+print(summary(model2))
+
+#Create coefficients and standard errors
+coefficients <- coef(model2)[c("mortgage_rate", "mortgage_rate_lag1", "mortgage_rate_lag2", 
+                               "mortgage_rate_lag3", "hpi", "median_income", "unemployment_rate")]
+std_errors <- sqrt(diag(vcov(model2)))[c("mortgage_rate", "mortgage_rate_lag1", "mortgage_rate_lag2", 
+                               "mortgage_rate_lag3", "hpi", "median_income", "unemployment_rate")]
+
+#Create data needed to plot confidence intervals
+plot_data2 <- data.frame(
+  Coefficient = names(coefficients),
+  Estimate = coefficients,
+  Std_Error = std_errors
+)
+
+#create plot of coefficients and confidence interval
+ggplot(plot_data2, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error,
+                                           ymax = Estimate + 1.96 * Std_Error)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  labs(title = "Coefficients and Confidence Intervals",
+       x = "Coefficient",
+       y = "Estimate") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```

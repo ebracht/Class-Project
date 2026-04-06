@@ -1,30 +1,17 @@
 Class Project
 ================
 
-- [Table of Contents](#table-of-contents)
-  - [Checkpoint 1: Progress on Eight Major
-    Tasks](#checkpoint-1-progress-on-eight-major-tasks)
-  - [Research Topic](#research-topic)
-  - [Meeting Minutes and Personal
-    Contributions](#meeting-minutes-and-personal-contributions)
-  - [Load Packages, Setup API Keys, Import
-    Data](#load-packages-setup-api-keys-import-data)
-  - [**Compute Summary Statistics**](#compute-summary-statistics)
-  - [**Create Visualizations**](#create-visualizations)
+- [Checkpoint 1: Progress on Eight Major
+  Tasks](#checkpoint-1-progress-on-eight-major-tasks)
+- [Research Topic](#research-topic)
+- [Meeting Minutes and Personal
+  Contributions](#meeting-minutes-and-personal-contributions)
+- [Load Packages, Setup API Keys, Import
+  Data](#load-packages-setup-api-keys-import-data)
+- [**Compute Summary Statistics**](#compute-summary-statistics)
+- [**Create Visualizations**](#create-visualizations)
 
-<div class="alert alert-warning">
-
-**This landing page displays the knitted output of our README.rmd file.
-For the code behind the analysis and figures shown below, please consult
-the README.rmd file.**
-
-</div>
-
-<!-- Optional spacer -->
-
-<br>
-
-# Table of Contents
+### **This landing page displays the knitted output of our README.rmd file. For the code behind the analysis and figures shown below, please consult the README.rmd file.**
 
 ## Checkpoint 1: Progress on Eight Major Tasks
 
@@ -486,7 +473,7 @@ merged <- left_join(
 
 ![](README_files/figure-gfm/figure_3-1.png)<!-- -->
 
-### Missingness check:
+### **Missingness check:**
 
     ## # A tibble: 8 × 2
     ##   variable           missing_count
@@ -500,199 +487,290 @@ merged <- left_join(
     ## 7 rent_burden                    0
     ## 8 housing_permits                0
 
-### Other plots:
+### **Other plots:**
 
 ![](README_files/figure-gfm/figure_4-1.png)<!-- -->
 
-![](README_files/figure-gfm/figure_5-1.png)<!-- --> \## Analysis \###
-Multicollinearity check:
+![](README_files/figure-gfm/figure_5-1.png)<!-- --> \## **Analysis**
+\### **Multicollinearity check:**
 
     ##     mortgage_rate               hpi unemployment_rate     median_income 
     ##          1.169683          3.552392          2.047872          3.075912 
     ##       rent_burden   housing_permits 
     ##          2.289029          1.229762
 
-### Merged + Lag variables:
-
-### Regression Analysis
+### **Regression Analysis**
 
 For directions on how to conduct multilinear regression and plot
 confidence intervals, [click
 here](https://www.geeksforgeeks.org/r-language/how-to-use-the-coeftest-function-in-r/).
 
-``` r
-#Create a simple multilinear regression model
-model1 <- lm(homeownership_rate ~ mortgage_rate + hpi + median_income +
-               unemployment_rate + state + year, data = merged )
-
-#Summarize model
-summary(model1)
-```
+#### **Model 1**
 
     ## 
     ## Call:
     ## lm(formula = homeownership_rate ~ mortgage_rate + hpi + median_income + 
-    ##     unemployment_rate + state + year, data = merged)
+    ##     unemployment_rate + state + as.factor(year), data = merged)
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -3.3732 -0.6241 -0.0287  0.5922  4.4400 
+    ## -3.3844 -0.4529  0.0224  0.5062  3.1016 
     ## 
-    ## Coefficients:
+    ## Coefficients: (1 not defined because of singularities)
     ##                       Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)          5.492e+02  4.970e+01  11.050  < 2e-16 ***
-    ## mortgage_rate        2.360e-01  4.561e-02   5.175 2.81e-07 ***
-    ## hpi                  7.519e-03  9.515e-04   7.903 7.98e-15 ***
-    ## median_income        3.883e-05  1.943e-05   1.998   0.0460 *  
-    ## unemployment_rate   -3.007e-02  2.254e-02  -1.334   0.1825    
-    ## stateAlaska         -5.960e+00  6.077e-01  -9.807  < 2e-16 ***
-    ## stateArizona        -4.900e+00  3.631e-01 -13.495  < 2e-16 ***
-    ## stateArkansas       -2.696e+00  3.397e-01  -7.937 6.16e-15 ***
-    ## stateCalifornia     -1.682e+01  4.476e-01 -37.581  < 2e-16 ***
-    ## stateColorado       -5.579e+00  4.418e-01 -12.628  < 2e-16 ***
-    ## stateConnecticut    -4.314e+00  5.504e-01  -7.839 1.28e-14 ***
-    ## stateDelaware        7.726e-01  4.087e-01   1.890   0.0591 .  
-    ## stateFlorida        -3.603e+00  3.472e-01 -10.380  < 2e-16 ***
-    ## stateGeorgia        -5.074e+00  3.665e-01 -13.845  < 2e-16 ***
-    ## stateHawaii         -1.364e+01  5.035e-01 -27.091  < 2e-16 ***
-    ## stateIdaho          -1.771e-01  3.477e-01  -0.509   0.6106    
-    ## stateIllinois       -2.991e+00  4.307e-01  -6.945 7.30e-12 ***
-    ## stateIndiana         5.356e-01  3.657e-01   1.465   0.1434    
-    ## stateIowa            2.209e+00  3.941e-01   5.604 2.79e-08 ***
-    ## stateKansas         -2.052e+00  3.925e-01  -5.229 2.12e-07 ***
-    ## stateKentucky       -1.335e+00  3.384e-01  -3.945 8.61e-05 ***
-    ## stateLouisiana      -2.364e+00  3.408e-01  -6.936 7.73e-12 ***
-    ## stateMaine           9.413e-01  3.660e-01   2.572   0.0103 *  
-    ## stateMaryland       -4.444e+00  6.005e-01  -7.401 3.12e-13 ***
-    ## stateMassachusetts  -1.113e+01  4.809e-01 -23.141  < 2e-16 ***
-    ## stateMichigan        2.751e+00  3.644e-01   7.550 1.07e-13 ***
-    ## stateMinnesota       2.044e+00  4.658e-01   4.388 1.28e-05 ***
-    ## stateMississippi     2.517e-01  3.449e-01   0.730   0.4656    
-    ## stateMissouri       -1.510e+00  3.510e-01  -4.303 1.87e-05 ***
-    ## stateMontana        -2.084e+00  3.448e-01  -6.044 2.20e-09 ***
-    ## stateNebraska       -2.966e+00  3.923e-01  -7.561 9.88e-14 ***
-    ## stateNevada         -1.242e+01  3.905e-01 -31.808  < 2e-16 ***
-    ## stateNew Hampshire  -9.292e-02  5.086e-01  -0.183   0.8551    
-    ## stateNew Jersey     -7.497e+00  5.569e-01 -13.462  < 2e-16 ***
-    ## stateNew Mexico     -1.013e+00  3.381e-01  -2.998   0.0028 ** 
-    ## stateNew York       -1.854e+01  4.041e-01 -45.874  < 2e-16 ***
-    ## stateNorth Carolina -3.891e+00  3.435e-01 -11.327  < 2e-16 ***
-    ## stateNorth Dakota   -5.600e+00  3.999e-01 -14.005  < 2e-16 ***
-    ## stateOhio           -2.220e+00  3.660e-01  -6.066 1.93e-09 ***
-    ## stateOklahoma       -2.691e+00  3.564e-01  -7.551 1.06e-13 ***
-    ## stateOregon         -8.588e+00  3.644e-01 -23.569  < 2e-16 ***
-    ## statePennsylvania   -1.088e+00  3.642e-01  -2.987   0.0029 ** 
-    ## stateRhode Island   -1.033e+01  3.893e-01 -26.537  < 2e-16 ***
-    ## stateSouth Carolina -2.281e-01  3.406e-01  -0.670   0.5032    
-    ## stateSouth Dakota   -1.826e+00  3.596e-01  -5.079 4.62e-07 ***
-    ## stateTennessee      -2.533e+00  3.396e-01  -7.458 2.07e-13 ***
-    ## stateTexas          -6.893e+00  3.984e-01 -17.303  < 2e-16 ***
-    ## stateUtah           -9.795e-01  4.486e-01  -2.184   0.0293 *  
-    ## stateVermont         1.306e-01  3.694e-01   0.354   0.7238    
-    ## stateVirginia       -4.302e+00  4.727e-01  -9.102  < 2e-16 ***
-    ## stateWashington     -8.659e+00  4.336e-01 -19.971  < 2e-16 ***
-    ## stateWest Virginia   4.883e+00  3.428e-01  14.245  < 2e-16 ***
-    ## stateWisconsin      -2.072e+00  3.839e-01  -5.397 8.69e-08 ***
-    ## stateWyoming         2.286e-01  4.176e-01   0.547   0.5842    
-    ## year                -2.408e-01  2.494e-02  -9.655  < 2e-16 ***
+    ## (Intercept)          8.434e+01  2.923e+00  28.855  < 2e-16 ***
+    ## mortgage_rate       -2.307e+00  5.594e-01  -4.125 4.07e-05 ***
+    ## hpi                  4.025e-03  8.528e-04   4.719 2.75e-06 ***
+    ## median_income       -1.078e-05  1.717e-05  -0.628 0.530096    
+    ## unemployment_rate   -8.596e-02  3.638e-02  -2.362 0.018372 *  
+    ## stateAlaska         -4.663e+00  5.231e-01  -8.914  < 2e-16 ***
+    ## stateArizona        -4.157e+00  3.000e-01 -13.859  < 2e-16 ***
+    ## stateArkansas       -2.993e+00  2.767e-01 -10.817  < 2e-16 ***
+    ## stateCalifornia     -1.469e+01  3.906e-01 -37.595  < 2e-16 ***
+    ## stateColorado       -4.083e+00  3.771e-01 -10.830  < 2e-16 ***
+    ## stateConnecticut    -2.583e+00  4.751e-01  -5.438 6.99e-08 ***
+    ## stateDelaware        2.126e+00  3.458e-01   6.148 1.19e-09 ***
+    ## stateFlorida        -2.880e+00  2.850e-01 -10.105  < 2e-16 ***
+    ## stateGeorgia        -4.513e+00  3.022e-01 -14.932  < 2e-16 ***
+    ## stateHawaii         -1.149e+01  4.399e-01 -26.126  < 2e-16 ***
+    ## stateIdaho           5.003e-01  2.857e-01   1.751 0.080276 .  
+    ## stateIllinois       -2.108e+00  3.627e-01  -5.813 8.59e-09 ***
+    ## stateIndiana         7.347e-01  3.006e-01   2.444 0.014717 *  
+    ## stateIowa            2.438e+00  3.325e-01   7.331 5.19e-13 ***
+    ## stateKansas         -1.866e+00  3.287e-01  -5.676 1.87e-08 ***
+    ## stateKentucky       -1.265e+00  2.757e-01  -4.590 5.08e-06 ***
+    ## stateLouisiana      -2.580e+00  2.773e-01  -9.302  < 2e-16 ***
+    ## stateMaine           2.028e+00  3.044e-01   6.662 4.77e-11 ***
+    ## stateMaryland       -2.372e+00  5.233e-01  -4.533 6.63e-06 ***
+    ## stateMassachusetts  -8.258e+00  4.256e-01 -19.404  < 2e-16 ***
+    ## stateMichigan        3.144e+00  3.017e-01  10.423  < 2e-16 ***
+    ## stateMinnesota       3.096e+00  3.981e-01   7.777 2.08e-14 ***
+    ## stateMississippi    -1.203e-01  2.830e-01  -0.425 0.670797    
+    ## stateMissouri       -1.263e+00  2.871e-01  -4.399 1.22e-05 ***
+    ## stateMontana        -1.549e+00  2.831e-01  -5.472 5.82e-08 ***
+    ## stateNebraska       -2.680e+00  3.353e-01  -7.995 4.07e-15 ***
+    ## stateNevada         -1.166e+01  3.276e-01 -35.581  < 2e-16 ***
+    ## stateNew Hampshire   1.598e+00  4.422e-01   3.613 0.000320 ***
+    ## stateNew Jersey     -5.184e+00  4.856e-01 -10.674  < 2e-16 ***
+    ## stateNew Mexico     -9.270e-01  2.746e-01  -3.376 0.000769 ***
+    ## stateNew York       -1.651e+01  3.489e-01 -47.317  < 2e-16 ***
+    ## stateNorth Carolina -3.434e+00  2.808e-01 -12.228  < 2e-16 ***
+    ## stateNorth Dakota   -5.218e+00  3.455e-01 -15.104  < 2e-16 ***
+    ## stateOhio           -2.023e+00  3.008e-01  -6.727 3.11e-11 ***
+    ## stateOklahoma       -2.981e+00  2.962e-01 -10.064  < 2e-16 ***
+    ## stateOregon         -7.392e+00  3.050e-01 -24.239  < 2e-16 ***
+    ## statePennsylvania   -2.133e-01  3.015e-01  -0.708 0.479405    
+    ## stateRhode Island   -8.646e+00  3.334e-01 -25.931  < 2e-16 ***
+    ## stateSouth Carolina  1.593e-01  2.782e-01   0.573 0.567087    
+    ## stateSouth Dakota   -1.487e+00  3.049e-01  -4.877 1.28e-06 ***
+    ## stateTennessee      -2.248e+00  2.763e-01  -8.135 1.40e-15 ***
+    ## stateTexas          -6.522e+00  3.318e-01 -19.656  < 2e-16 ***
+    ## stateUtah            3.190e-01  3.853e-01   0.828 0.407994    
+    ## stateVermont         1.243e+00  3.115e-01   3.989 7.18e-05 ***
+    ## stateVirginia       -2.785e+00  4.072e-01  -6.839 1.49e-11 ***
+    ## stateWashington     -6.761e+00  3.729e-01 -18.129  < 2e-16 ***
+    ## stateWest Virginia   4.386e+00  2.798e-01  15.674  < 2e-16 ***
+    ## stateWisconsin      -1.486e+00  3.197e-01  -4.647 3.88e-06 ***
+    ## stateWyoming         7.223e-01  3.530e-01   2.046 0.041048 *  
+    ## as.factor(year)2006  1.517e+00  3.012e-01   5.037 5.74e-07 ***
+    ## as.factor(year)2007  1.273e+00  2.387e-01   5.334 1.22e-07 ***
+    ## as.factor(year)2008  2.830e-01  1.596e-01   1.773 0.076531 .  
+    ## as.factor(year)2009 -2.297e+00  5.892e-01  -3.898 0.000104 ***
+    ## as.factor(year)2010 -3.511e+00  7.718e-01  -4.549 6.14e-06 ***
+    ## as.factor(year)2011 -4.739e+00  9.170e-01  -5.168 2.93e-07 ***
+    ## as.factor(year)2012 -7.261e+00  1.367e+00  -5.313 1.37e-07 ***
+    ## as.factor(year)2013 -6.916e+00  1.205e+00  -5.738 1.32e-08 ***
+    ## as.factor(year)2014 -6.995e+00  1.113e+00  -6.286 5.12e-10 ***
+    ## as.factor(year)2015 -7.806e+00  1.313e+00  -5.944 4.01e-09 ***
+    ## as.factor(year)2016 -8.267e+00  1.444e+00  -5.726 1.41e-08 ***
+    ## as.factor(year)2017 -6.877e+00  1.282e+00  -5.364 1.04e-07 ***
+    ## as.factor(year)2018 -5.602e+00  9.952e-01  -5.629 2.43e-08 ***
+    ## as.factor(year)2019 -6.869e+00  1.378e+00  -4.986 7.42e-07 ***
+    ## as.factor(year)2021 -7.978e+00  1.948e+00  -4.094 4.62e-05 ***
+    ## as.factor(year)2022 -2.895e+00  6.780e-01  -4.270 2.17e-05 ***
+    ## as.factor(year)2023  2.877e-01  2.020e-01   1.424 0.154773    
+    ## as.factor(year)2024         NA         NA      NA       NA    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 1.042 on 895 degrees of freedom
-    ## Multiple R-squared:  0.9478, Adjusted R-squared:  0.9447 
-    ## F-statistic: 301.2 on 54 and 895 DF,  p-value: < 2.2e-16
+    ## Residual standard error: 0.8458 on 879 degrees of freedom
+    ## Multiple R-squared:  0.9662, Adjusted R-squared:  0.9635 
+    ## F-statistic: 359.3 on 70 and 879 DF,  p-value: < 2.2e-16
 
-``` r
-#Create coefficients and standard errors
-coefficients <- coef(model1)[c("mortgage_rate", "hpi", "median_income", "unemployment_rate")]
-std_errors <- sqrt(diag(vcov(model1)))[c("mortgage_rate", "hpi", "median_income", "unemployment_rate")]
+![](README_files/figure-gfm/regression_1-1.png)<!-- -->
 
-#Create data needed to plot confidence intervals
-plot_data <- data.frame(
-  Coefficient = names(coefficients),
-  Estimate = coefficients,
-  Std_Error = std_errors
-)
-
-#create plot of coefficients and confidence interval
-ggplot(plot_data, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error,
-                                           ymax = Estimate + 1.96 * Std_Error)) +
-  geom_point(size = 3) +
-  geom_errorbar(width = 0.2) +
-  labs(title = "Coefficients and Confidence Intervals",
-       x = "Coefficient",
-       y = "Estimate") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-![](README_files/figure-gfm/regression-1.png)<!-- -->
-
-``` r
-#Calculate clustered standard errors
-model1_cluster_se <- vcovCL(model1, cluster = ~ state)
-summary_clustered <- coeftest(model1, vcov = model1_cluster_se)
-print(summary_clustered)
-```
+#### **Model 1 with Clustered Standard Errors**
 
     ## 
     ## t test of coefficients:
     ## 
     ##                        Estimate  Std. Error  t value  Pr(>|t|)    
-    ## (Intercept)          5.4920e+02  1.0415e+02   5.2732 1.682e-07 ***
-    ## mortgage_rate        2.3603e-01  7.5758e-02   3.1156  0.001894 ** 
-    ## hpi                  7.5194e-03  1.5270e-03   4.9242 1.008e-06 ***
-    ## median_income        3.8827e-05  3.4504e-05   1.1253  0.260772    
-    ## unemployment_rate   -3.0071e-02  2.4914e-02  -1.2070  0.227747    
-    ## stateAlaska         -5.9599e+00  8.9681e-01  -6.6457 5.238e-11 ***
-    ## stateArizona        -4.8996e+00  2.8845e-01 -16.9859 < 2.2e-16 ***
-    ## stateArkansas       -2.6962e+00  8.7343e-02 -30.8691 < 2.2e-16 ***
-    ## stateCalifornia     -1.6823e+01  7.0769e-01 -23.7719 < 2.2e-16 ***
-    ## stateColorado       -5.5792e+00  6.0805e-01  -9.1755 < 2.2e-16 ***
-    ## stateConnecticut    -4.3144e+00  8.4921e-01  -5.0805 4.583e-07 ***
-    ## stateDelaware        7.7257e-01  5.1222e-01   1.5083  0.131840    
-    ## stateFlorida        -3.6034e+00  2.0804e-01 -17.3212 < 2.2e-16 ***
-    ## stateGeorgia        -5.0741e+00  2.7590e-01 -18.3910 < 2.2e-16 ***
-    ## stateHawaii         -1.3642e+01  8.2528e-01 -16.5297 < 2.2e-16 ***
-    ## stateIdaho          -1.7714e-01  2.0804e-01  -0.8515  0.394720    
-    ## stateIllinois       -2.9909e+00  4.9658e-01  -6.0230 2.498e-09 ***
-    ## stateIndiana         5.3559e-01  2.3163e-01   2.3123  0.020988 *  
-    ## stateIowa            2.2087e+00  3.2869e-01   6.7199 3.234e-11 ***
-    ## stateKansas         -2.0523e+00  3.2134e-01  -6.3868 2.719e-10 ***
-    ## stateKentucky       -1.3351e+00  2.3540e-02 -56.7169 < 2.2e-16 ***
-    ## stateLouisiana      -2.3639e+00  7.6224e-02 -31.0121 < 2.2e-16 ***
-    ## stateMaine           9.4125e-01  3.1361e-01   3.0014  0.002762 ** 
-    ## stateMaryland       -4.4440e+00  9.8442e-01  -4.5143 7.200e-06 ***
-    ## stateMassachusetts  -1.1128e+01  8.8037e-01 -12.6404 < 2.2e-16 ***
-    ## stateMichigan        2.7510e+00  2.4275e-01  11.3327 < 2.2e-16 ***
-    ## stateMinnesota       2.0442e+00  5.9812e-01   3.4177  0.000660 ***
-    ## stateMississippi     2.5172e-01  1.4714e-01   1.7108  0.087467 .  
-    ## stateMissouri       -1.5103e+00  1.6923e-01  -8.9247 < 2.2e-16 ***
-    ## stateMontana        -2.0839e+00  1.6172e-01 -12.8858 < 2.2e-16 ***
-    ## stateNebraska       -2.9662e+00  3.2584e-01  -9.1033 < 2.2e-16 ***
-    ## stateNevada         -1.2420e+01  3.7504e-01 -33.1170 < 2.2e-16 ***
-    ## stateNew Hampshire  -9.2924e-02  7.6879e-01  -0.1209  0.903821    
-    ## stateNew Jersey     -7.4973e+00  9.4158e-01  -7.9624 5.101e-15 ***
-    ## stateNew Mexico     -1.0135e+00  2.3511e-02 -43.1050 < 2.2e-16 ***
-    ## stateNew York       -1.8538e+01  5.7499e-01 -32.2408 < 2.2e-16 ***
-    ## stateNorth Carolina -3.8906e+00  1.4829e-01 -26.2371 < 2.2e-16 ***
-    ## stateNorth Dakota   -5.6003e+00  3.5627e-01 -15.7190 < 2.2e-16 ***
-    ## stateOhio           -2.2203e+00  2.3243e-01  -9.5524 < 2.2e-16 ***
-    ## stateOklahoma       -2.6913e+00  1.6765e-01 -16.0525 < 2.2e-16 ***
-    ## stateOregon         -8.5884e+00  3.5451e-01 -24.2261 < 2.2e-16 ***
-    ## statePennsylvania   -1.0877e+00  3.1288e-01  -3.4762  0.000533 ***
-    ## stateRhode Island   -1.0332e+01  5.0122e-01 -20.6137 < 2.2e-16 ***
-    ## stateSouth Carolina -2.2810e-01  1.0721e-01  -2.1277  0.033639 *  
-    ## stateSouth Dakota   -1.8265e+00  2.1423e-01  -8.5259 < 2.2e-16 ***
-    ## stateTennessee      -2.5327e+00  8.5846e-02 -29.5030 < 2.2e-16 ***
-    ## stateTexas          -6.8934e+00  3.5674e-01 -19.3232 < 2.2e-16 ***
-    ## stateUtah           -9.7952e-01  5.9472e-01  -1.6470  0.099904 .  
-    ## stateVermont         1.3059e-01  3.6384e-01   0.3589  0.719741    
-    ## stateVirginia       -4.3022e+00  6.7515e-01  -6.3722 2.978e-10 ***
-    ## stateWashington     -8.6586e+00  6.4678e-01 -13.3874 < 2.2e-16 ***
-    ## stateWest Virginia   4.8828e+00  1.4038e-01  34.7829 < 2.2e-16 ***
-    ## stateWisconsin      -2.0719e+00  3.3845e-01  -6.1219 1.382e-09 ***
-    ## stateWyoming         2.2864e-01  4.2060e-01   0.5436  0.586854    
-    ## year                -2.4076e-01  5.2264e-02  -4.6066 4.687e-06 ***
+    ## (Intercept)          8.4343e+01  5.5120e+00  15.3016 < 2.2e-16 ***
+    ## mortgage_rate       -2.3072e+00  1.0787e+00  -2.1390 0.0327117 *  
+    ## hpi                  4.0246e-03  1.7168e-03   2.3443 0.0192864 *  
+    ## median_income       -1.0784e-05  3.1778e-05  -0.3393 0.7344330    
+    ## unemployment_rate   -8.5957e-02  8.8684e-02  -0.9692 0.3326876    
+    ## stateAlaska         -4.6630e+00  8.3243e-01  -5.6017 2.839e-08 ***
+    ## stateArizona        -4.1571e+00  2.5858e-01 -16.0770 < 2.2e-16 ***
+    ## stateArkansas       -2.9926e+00  8.9933e-02 -33.2762 < 2.2e-16 ***
+    ## stateCalifornia     -1.4686e+01  6.5040e-01 -22.5792 < 2.2e-16 ***
+    ## stateColorado       -4.0833e+00  5.2840e-01  -7.7278 2.985e-14 ***
+    ## stateConnecticut    -2.5833e+00  7.5585e-01  -3.4177 0.0006604 ***
+    ## stateDelaware        2.1259e+00  4.4396e-01   4.7884 1.972e-06 ***
+    ## stateFlorida        -2.8803e+00  1.9585e-01 -14.7066 < 2.2e-16 ***
+    ## stateGeorgia        -4.5132e+00  2.5081e-01 -17.9944 < 2.2e-16 ***
+    ## stateHawaii         -1.1493e+01  7.1576e-01 -16.0574 < 2.2e-16 ***
+    ## stateIdaho           5.0031e-01  1.8979e-01   2.6361 0.0085331 ** 
+    ## stateIllinois       -2.1082e+00  4.5999e-01  -4.5832 5.242e-06 ***
+    ## stateIndiana         7.3475e-01  2.2233e-01   3.3048 0.0009891 ***
+    ## stateIowa            2.4377e+00  3.4123e-01   7.1437 1.907e-12 ***
+    ## stateKansas         -1.8656e+00  3.2571e-01  -5.7279 1.396e-08 ***
+    ## stateKentucky       -1.2652e+00  6.2329e-02 -20.2994 < 2.2e-16 ***
+    ## stateLouisiana      -2.5799e+00  8.5633e-02 -30.1272 < 2.2e-16 ***
+    ## stateMaine           2.0279e+00  3.1875e-01   6.3620 3.201e-10 ***
+    ## stateMaryland       -2.3720e+00  8.6762e-01  -2.7339 0.0063841 ** 
+    ## stateMassachusetts  -8.2582e+00  7.8786e-01 -10.4819 < 2.2e-16 ***
+    ## stateMichigan        3.1444e+00  2.5715e-01  12.2278 < 2.2e-16 ***
+    ## stateMinnesota       3.0959e+00  5.3993e-01   5.7338 1.350e-08 ***
+    ## stateMississippi    -1.2033e-01  1.4401e-01  -0.8356 0.4036340    
+    ## stateMissouri       -1.2629e+00  1.5534e-01  -8.1295 1.459e-15 ***
+    ## stateMontana        -1.5493e+00  1.6760e-01  -9.2440 < 2.2e-16 ***
+    ## stateNebraska       -2.6803e+00  3.5877e-01  -7.4707 1.924e-13 ***
+    ## stateNevada         -1.1657e+01  3.7088e-01 -31.4308 < 2.2e-16 ***
+    ## stateNew Hampshire   1.5976e+00  6.7794e-01   2.3565 0.0186670 *  
+    ## stateNew Jersey     -5.1836e+00  8.2880e-01  -6.2543 6.226e-10 ***
+    ## stateNew Mexico     -9.2697e-01  2.7706e-02 -33.4572 < 2.2e-16 ***
+    ## stateNew York       -1.6510e+01  5.5008e-01 -30.0136 < 2.2e-16 ***
+    ## stateNorth Carolina -3.4338e+00  1.4306e-01 -24.0027 < 2.2e-16 ***
+    ## stateNorth Dakota   -5.2181e+00  3.9540e-01 -13.1971 < 2.2e-16 ***
+    ## stateOhio           -2.0234e+00  2.2720e-01  -8.9056 < 2.2e-16 ***
+    ## stateOklahoma       -2.9810e+00  2.2262e-01 -13.3903 < 2.2e-16 ***
+    ## stateOregon         -7.3921e+00  3.3404e-01 -22.1290 < 2.2e-16 ***
+    ## statePennsylvania   -2.1334e-01  2.7384e-01  -0.7791 0.4361563    
+    ## stateRhode Island   -8.6464e+00  4.7528e-01 -18.1924 < 2.2e-16 ***
+    ## stateSouth Carolina  1.5928e-01  1.1902e-01   1.3383 0.1811529    
+    ## stateSouth Dakota   -1.4870e+00  2.6733e-01  -5.5623 3.534e-08 ***
+    ## stateTennessee      -2.2478e+00  8.0474e-02 -27.9316 < 2.2e-16 ***
+    ## stateTexas          -6.5218e+00  3.3777e-01 -19.3084 < 2.2e-16 ***
+    ## stateUtah            3.1897e-01  5.2757e-01   0.6046 0.5456005    
+    ## stateVermont         1.2427e+00  3.3551e-01   3.7040 0.0002255 ***
+    ## stateVirginia       -2.7849e+00  5.9248e-01  -4.7004 3.013e-06 ***
+    ## stateWashington     -6.7610e+00  5.7235e-01 -11.8127 < 2.2e-16 ***
+    ## stateWest Virginia   4.3857e+00  1.3726e-01  31.9522 < 2.2e-16 ***
+    ## stateWisconsin      -1.4855e+00  3.0629e-01  -4.8500 1.460e-06 ***
+    ## stateWyoming         7.2234e-01  4.0311e-01   1.7919 0.0734935 .  
+    ## as.factor(year)2006  1.5170e+00  5.6257e-01   2.6965 0.0071413 ** 
+    ## as.factor(year)2007  1.2730e+00  4.2457e-01   2.9985 0.0027899 ** 
+    ## as.factor(year)2008  2.8304e-01  1.1763e-01   2.4062 0.0163244 *  
+    ## as.factor(year)2009 -2.2970e+00  1.1028e+00  -2.0828 0.0375581 *  
+    ## as.factor(year)2010 -3.5112e+00  1.4280e+00  -2.4589 0.0141291 *  
+    ## as.factor(year)2011 -4.7387e+00  1.7186e+00  -2.7572 0.0059502 ** 
+    ## as.factor(year)2012 -7.2612e+00  2.5877e+00  -2.8061 0.0051260 ** 
+    ## as.factor(year)2013 -6.9159e+00  2.2889e+00  -3.0215 0.0025884 ** 
+    ## as.factor(year)2014 -6.9947e+00  2.0999e+00  -3.3309 0.0009017 ***
+    ## as.factor(year)2015 -7.8057e+00  2.5008e+00  -3.1212 0.0018598 ** 
+    ## as.factor(year)2016 -8.2675e+00  2.7658e+00  -2.9892 0.0028753 ** 
+    ## as.factor(year)2017 -6.8771e+00  2.4453e+00  -2.8124 0.0050274 ** 
+    ## as.factor(year)2018 -5.6022e+00  1.8670e+00  -3.0006 0.0027707 ** 
+    ## as.factor(year)2019 -6.8685e+00  2.6354e+00  -2.6062 0.0093094 ** 
+    ## as.factor(year)2021 -7.9775e+00  3.7455e+00  -2.1299 0.0334558 *  
+    ## as.factor(year)2022 -2.8952e+00  1.3194e+00  -2.1943 0.0284780 *  
+    ## as.factor(year)2023  2.8771e-01  2.3973e-01   1.2001 0.2304044    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+#### **Model 2**
+
+    ## 
+    ## Call:
+    ## lm(formula = homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 + 
+    ##     mortgage_rate_lag2 + mortgage_rate_lag3 + hpi + median_income + 
+    ##     unemployment_rate + state + as.factor(year), data = merged)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -3.3511 -0.4346  0.0286  0.4616  2.8344 
+    ## 
+    ## Coefficients: (4 not defined because of singularities)
+    ##                       Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)          6.695e+01  1.550e+00  43.191  < 2e-16 ***
+    ## mortgage_rate       -1.682e-01  7.225e-02  -2.328 0.020162 *  
+    ## mortgage_rate_lag1   1.940e-01  8.604e-02   2.255 0.024455 *  
+    ## mortgage_rate_lag2   6.125e-02  7.752e-02   0.790 0.429735    
+    ## mortgage_rate_lag3   5.395e-01  1.523e-01   3.542 0.000423 ***
+    ## hpi                  3.515e-03  9.677e-04   3.632 0.000300 ***
+    ## median_income       -1.123e-05  2.044e-05  -0.549 0.582905    
+    ## unemployment_rate   -5.081e-02  3.787e-02  -1.342 0.180137    
+    ## stateAlaska         -4.222e+00  6.179e-01  -6.833 1.75e-11 ***
+    ## stateArizona        -4.316e+00  3.227e-01 -13.377  < 2e-16 ***
+    ## stateArkansas       -3.006e+00  2.909e-01 -10.334  < 2e-16 ***
+    ## stateCalifornia     -1.476e+01  4.348e-01 -33.936  < 2e-16 ***
+    ## stateColorado       -4.214e+00  4.243e-01  -9.932  < 2e-16 ***
+    ## stateConnecticut    -2.669e+00  5.517e-01  -4.837 1.61e-06 ***
+    ## stateDelaware        2.367e+00  3.818e-01   6.201 9.36e-10 ***
+    ## stateFlorida        -3.076e+00  2.979e-01 -10.326  < 2e-16 ***
+    ## stateGeorgia        -4.717e+00  3.240e-01 -14.560  < 2e-16 ***
+    ## stateHawaii         -1.114e+01  4.987e-01 -22.346  < 2e-16 ***
+    ## stateIdaho           6.398e-01  3.009e-01   2.127 0.033784 *  
+    ## stateIllinois       -2.289e+00  4.107e-01  -5.574 3.49e-08 ***
+    ## stateIndiana         6.565e-01  3.213e-01   2.043 0.041396 *  
+    ## stateIowa            2.476e+00  3.689e-01   6.712 3.85e-11 ***
+    ## stateKansas         -2.017e+00  3.632e-01  -5.554 3.92e-08 ***
+    ## stateKentucky       -1.463e+00  2.885e-01  -5.069 5.06e-07 ***
+    ## stateLouisiana      -2.577e+00  2.909e-01  -8.859  < 2e-16 ***
+    ## stateMaine           2.354e+00  3.197e-01   7.364 4.83e-13 ***
+    ## stateMaryland       -2.270e+00  6.199e-01  -3.662 0.000268 ***
+    ## stateMassachusetts  -8.084e+00  4.639e-01 -17.428  < 2e-16 ***
+    ## stateMichigan        2.934e+00  3.211e-01   9.136  < 2e-16 ***
+    ## stateMinnesota       2.906e+00  4.583e-01   6.340 4.01e-10 ***
+    ## stateMississippi    -1.760e-01  2.971e-01  -0.592 0.553761    
+    ## stateMissouri       -1.424e+00  3.056e-01  -4.658 3.79e-06 ***
+    ## stateMontana        -1.407e+00  2.985e-01  -4.714 2.90e-06 ***
+    ## stateNebraska       -2.601e+00  3.702e-01  -7.026 4.86e-12 ***
+    ## stateNevada         -1.195e+01  3.583e-01 -33.356  < 2e-16 ***
+    ## stateNew Hampshire   1.781e+00  5.098e-01   3.494 0.000505 ***
+    ## stateNew Jersey     -5.186e+00  5.647e-01  -9.183  < 2e-16 ***
+    ## stateNew Mexico     -8.238e-01  2.877e-01  -2.863 0.004311 ** 
+    ## stateNew York       -1.628e+01  3.654e-01 -44.562  < 2e-16 ***
+    ## stateNorth Carolina -3.513e+00  2.951e-01 -11.906  < 2e-16 ***
+    ## stateNorth Dakota   -5.279e+00  3.902e-01 -13.530  < 2e-16 ***
+    ## stateOhio           -2.253e+00  3.237e-01  -6.960 7.56e-12 ***
+    ## stateOklahoma       -3.066e+00  3.164e-01  -9.691  < 2e-16 ***
+    ## stateOregon         -7.372e+00  3.229e-01 -22.826  < 2e-16 ***
+    ## statePennsylvania   -2.430e-01  3.239e-01  -0.750 0.453368    
+    ## stateRhode Island   -8.491e+00  3.527e-01 -24.076  < 2e-16 ***
+    ## stateSouth Carolina  3.766e-01  2.908e-01   1.295 0.195702    
+    ## stateSouth Dakota   -1.213e+00  3.291e-01  -3.686 0.000245 ***
+    ## stateTennessee      -2.403e+00  2.897e-01  -8.294 5.24e-16 ***
+    ## stateTexas          -6.684e+00  3.683e-01 -18.149  < 2e-16 ***
+    ## stateUtah            4.826e-01  4.386e-01   1.100 0.271486    
+    ## stateVermont         1.597e+00  3.337e-01   4.785 2.07e-06 ***
+    ## stateVirginia       -2.812e+00  4.660e-01  -6.034 2.54e-09 ***
+    ## stateWashington     -6.750e+00  4.162e-01 -16.217  < 2e-16 ***
+    ## stateWest Virginia   4.365e+00  2.935e-01  14.876  < 2e-16 ***
+    ## stateWisconsin      -1.554e+00  3.487e-01  -4.457 9.63e-06 ***
+    ## stateWyoming         1.063e+00  3.935e-01   2.701 0.007074 ** 
+    ## as.factor(year)2009 -8.117e-01  2.245e-01  -3.615 0.000321 ***
+    ## as.factor(year)2010 -1.049e+00  2.126e-01  -4.937 9.81e-07 ***
+    ## as.factor(year)2011 -1.446e+00  2.019e-01  -7.165 1.90e-12 ***
+    ## as.factor(year)2012 -1.648e+00  2.043e-01  -8.067 2.95e-15 ***
+    ## as.factor(year)2013 -1.602e+00  2.356e-01  -6.802 2.15e-11 ***
+    ## as.factor(year)2014 -1.935e+00  2.447e-01  -7.909 9.59e-15 ***
+    ## as.factor(year)2015 -1.662e+00  2.854e-01  -5.823 8.68e-09 ***
+    ## as.factor(year)2016 -1.803e+00  2.322e-01  -7.767 2.71e-14 ***
+    ## as.factor(year)2017 -1.150e+00  2.070e-01  -5.557 3.85e-08 ***
+    ## as.factor(year)2018 -9.185e-01  2.245e-01  -4.091 4.78e-05 ***
+    ## as.factor(year)2019 -8.868e-01  1.913e-01  -4.635 4.22e-06 ***
+    ## as.factor(year)2021         NA         NA      NA       NA    
+    ## as.factor(year)2022         NA         NA      NA       NA    
+    ## as.factor(year)2023         NA         NA      NA       NA    
+    ## as.factor(year)2024         NA         NA      NA       NA    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.8133 on 732 degrees of freedom
+    ##   (150 observations deleted due to missingness)
+    ## Multiple R-squared:  0.9688, Adjusted R-squared:  0.966 
+    ## F-statistic: 339.7 on 67 and 732 DF,  p-value: < 2.2e-16
+
+![](README_files/figure-gfm/regression_2-1.png)<!-- -->
