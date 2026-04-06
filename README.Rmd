@@ -288,7 +288,7 @@ mortgage_annual <- mortgage_raw %>%
 ### **Import local data:**
 ```{r import_local_data, message=FALSE, warning=FALSE}
 # Import Local Data
-fhfa_raw <- read_csv("DaAn Midterm/hpi_at_state (1).csv", col_names = FALSE) %>%
+fhfa_raw <- read_csv("Data/hpi_at_state (1).csv", col_names = FALSE) %>%
   setNames(c("state", "year", "quarter", "hpi"))
 
 # Set HPI data by state/year
@@ -305,13 +305,13 @@ hpi_annual <- fhfa_annual %>%
   mutate(state = state.name[match(state, state.abb)])
 
 # Import local unemployment data
-bls_data <- read_delim("DaAn Midterm/la.data.2.AllStatesU.txt", delim = "\t") %>%
+bls_data <- read_delim("Data/la.data.2.AllStatesU.txt", delim = "\t") %>%
   clean_names()
 
-bls_series <- read_delim("DaAn Midterm/la.series.txt", delim = "\t") %>%
+bls_series <- read_delim("Data/la.series.txt", delim = "\t") %>%
   clean_names()
 
-bls_area <- read_delim("DaAn Midterm/la.area", delim = "\t") %>%
+bls_area <- read_delim("Data/la.area", delim = "\t") %>%
   clean_names()
 
 # Join the actual data to the series
@@ -587,35 +587,6 @@ p3 <- autoplot(mortgage_ts, mortgage_rate) +
 # Combine all three plots
 p1 / p2 / p3
 
-```
-### **Histograms:**
-```{r}
-# Histogram plots of key variables
-merged %>%
-  select(
-    homeownership_rate,
-    median_income,
-    population,
-    hpi,
-    unemployment_rate,
-    rent_burden,
-    housing_permits
-  ) %>%
-  pivot_longer(
-    cols = everything(),
-    names_to = "variable",
-    values_to = "value"
-  ) %>%
-  filter(!is.na(value)) %>%
-  ggplot(aes(x = value)) +
-  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
-  facet_wrap(~ variable, scales = "free", ncol = 2) +
-  labs(
-    title = "Histograms of Key Variables",
-    x = "Value",
-    y = "Count"
-  ) +
-  theme_minimal()
 ```
 
 ### **Correlation Matrix:**
