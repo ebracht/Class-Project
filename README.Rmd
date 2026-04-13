@@ -10,6 +10,38 @@ output:
 
 ### **This landing page displays the knitted output of our README.Rmd file. For the code behind the analysis and figures shown below, please consult the README.Rmd file.**
 
+# Class Project
+
+## Repository Guide
+
+This repository contains our group project for Software Tools for Data Analysis. Our project studies how mortgage interest rates and housing prices affect homeownership rates across U.S. states over time. The final audience for this work is Scott Turner, U.S. Secretary of Housing and Urban Development (HUD).
+
+### Branch Structure
+- `main`: current working branch for the final project deliverables
+- `Checkpoint-1` branch: preserved as a historical archive of our first checkpoint submission
+
+### Repository Contents
+- `README.Rmd`: source file for this repository landing page
+- `README.md`: knitted GitHub-facing version of the README
+- `Data/`: raw and cleaned data files used in the analysis
+- `Report Outline.docx`: working outline for the written report
+- `README_files/`: figures generated from the README
+
+### Team Workflow
+To keep the repository organized, team members should:
+1. Pull the most recent version of the repository before starting work
+2. Make changes locally in the appropriate files
+3. Knit `README.Rmd` after updating it so that `README.md` stays current
+4. Commit changes with clear commit messages
+5. Push updates after meaningful progress
+
+### Current Project Responsibilities
+- Ryan: Introduction, Data Summary, README/repository instructions
+- Levi: Data Analytics
+- Liz: Conclusion, Policy Recommendations, repository/class page coordination
+
+This README serves as the main landing page for our project progress, documentation, meeting notes, and selected analysis outputs.
+
 ## Checkpoint 1: Progress on Eight Major Tasks 
 **1) Propose a research topic**
 
