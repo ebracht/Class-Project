@@ -1,14 +1,14 @@
 ---
 title: "Class Project"
 output:
+  html_document: default
   github_document:
     toc: true
     toc_depth: 2
-  html_document: default
 ---
 
 
-### **This landing page displays the knitted output of our README.rmd file. For the code behind the analysis and figures shown below, please consult the README.rmd file.**
+### **This landing page displays the knitted output of our README.Rmd file. For the code behind the analysis and figures shown below, please consult the README.Rmd file.**
 
 ## Checkpoint 1: Progress on Eight Major Tasks 
 **1) Propose a research topic**
@@ -136,13 +136,30 @@ In advance of Meeting 6, we plan to look into:
 ## Load Packages, Setup API Keys, Import Data
 
 ### **Meeting 6 (03/30)**
-We reviewed the feedback on our Checkpoint 1 submission and the what we need to work on for Checkpoint 2. In advance of our meeting next week, we made a list of the following action items to address some of the feedback and begin preparing to work towards Checkpoint 2:
+We reviewed the feedback on our Checkpoint 1 submission and the what we need to work on for Checkpoint 2. In advance of our meeting next week, we made a list of the following action items to address the feedback and begin preparing to work towards Checkpoint 2:
 
 - Liz: Import repository to group page and update README
     - If time, look into using the integrated GitHub Project tool  
 - Levi: In the README include descriptions of where to find files  
 - Ryan: Clean repositor and make image file names more descriptive  
 - All: Try to get more familiar working with datasets we plan to use  
+
+### **Meeting 6 (04/06)**
+We discussed progress we had made since our last meeting. Liz was coordinating with Professor Chale on how to import our repository to the group page. Ryan created several additional  figures to inform the data summary and test for missingness and multicolinearity. Levi created a multilinear regression model and tested variable significance with and without clustered standard errors. To prepare for Checkpoint 2, we assigned each person to (a) section(s) of the report for the purposes of drafting the outline. Those assignments and other next steps are as follows:
+
+- Report Outline
+    - Intro (Ryan)
+    - Data Summary (Ryan) 
+    - Data Analytics (Levi)
+    - Conclusion (Liz)
+    - Policy Recommendations (Liz)
+- Sort out repository on class page (Liz email prof)
+- Add detailed instructions of repository on README (Ryan)
+- Develop additional regression models for Data Analytics section (Levi)
+- Updating Readme notes (All)
+    - Meeting to meeting
+    - Contributions
+- Check in on submission/last steps next week
 
 
 ```{r clear_environment, include=FALSE}
@@ -410,7 +427,7 @@ state_unemployment <- bls_merged %>%
 ```
 
 **Merge imported data:**
-```{r merge_data, message=FALSE}
+```{r merge_data, message=FALSE, warning=FALSE}
 #Merge the data sets by year and state
 merged <- left_join(
   population,
@@ -443,12 +460,19 @@ merged <- left_join(
   )
 ```
 
-## **Compute Summary Statistics**
+```{r permits_per_person, message=FALSE, warning=FALSE, include=FALSE}
+#Estimate annual mortgage rates
+merged <- merged %>%
+  mutate(perm_per_person = housing_permits/population, NA)
+```
+
 ```{r excludeDCandPR, echo=FALSE, message=FALSE, }
+#Filter out D.C. and PR
 merged <- merged %>%
   filter(!state %in% c("Puerto Rico", "District of Columbia"))
 ```
 
+## **Compute Summary Statistics**
 ### **Compute population summary statistics:**
 ```{r pop_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for population:")
@@ -503,6 +527,13 @@ cat("Standard Deviation:", sd(merged$rent_burden, na.rm = TRUE))
 cat("Variance:", var(merged$rent_burden, na.rm = TRUE))
 ```
 
+### **Compute rent burden summary statistics:**
+```{r perm_per_person_summary_stats, echo=FALSE, message=FALSE, warning = FALSE}
+summary(merged$perm_per_person)
+cat("Standard Deviation:", sd(merged$perm_per_person, na.rm = TRUE))
+cat("Variance:", var(merged$perm_per_person, na.rm = TRUE))
+```
+
 ## **Create Visualizations**
 
 ### **Plot histograms of key variables:**
@@ -514,7 +545,9 @@ merged %>%
     median_income,
     population,
     hpi,
-    unemployment_rate
+    unemployment_rate,
+    rent_burden,
+    perm_per_person
   ) %>%
   pivot_longer(
     cols = everything(),
@@ -596,7 +629,7 @@ corr_data <- merged %>%
     unemployment_rate,
     mortgage_rate,
     rent_burden,
-    housing_permits
+    perm_per_person
   )
 
 corr_matrix <- cor(corr_data, use = "complete.obs")
@@ -647,7 +680,7 @@ merged %>%
         unemployment_rate,
         mortgage_rate,
         rent_burden,
-        housing_permits
+        perm_per_person
       ),
       ~ sum(is.na(.))
     )
@@ -668,7 +701,7 @@ merged %>%
     unemployment_rate,
     median_income,
     rent_burden,
-    housing_permits
+    perm_per_person
   ) %>%
   pivot_longer(
     cols = -homeownership_rate,
@@ -704,7 +737,7 @@ merged %>%
 ```{r multicollinearity_check, echo=FALSE, message=FALSE, }
 vif_model <- lm(
   homeownership_rate ~ mortgage_rate + hpi + unemployment_rate +
-    median_income + rent_burden + housing_permits,
+    median_income + rent_burden + perm_per_person,
   data = merged
 )
 
@@ -729,18 +762,18 @@ merged <- merged %>%
 ### **Regression Analysis**
 For directions on how to conduct multilinear regression and plot confidence intervals, [click here](https://www.geeksforgeeks.org/r-language/how-to-use-the-coeftest-function-in-r/).
 
-#### **Model 1**
-```{r regression_1, echo=FALSE, message=FALSE, }
+#### **Basic Model**
+```{r regression_basic, echo=FALSE, message=FALSE, }
 #Create a simple multilinear regression model
-model1 <- lm(homeownership_rate ~ mortgage_rate + hpi + median_income +
-               unemployment_rate + state + as.factor(year), data = merged )
+model <- lm(homeownership_rate ~ mortgage_rate + state + 
+               as.factor(year), data = merged )
 
 #Summarize model
-print(summary(model1))
+print(summary(model))
 
 #Create coefficients and standard errors
-coefficients <- coef(model1)[c("mortgage_rate", "hpi", "median_income", "unemployment_rate")]
-std_errors <- sqrt(diag(vcov(model1)))[c("mortgage_rate", "hpi", "median_income", "unemployment_rate")]
+coefficients <- coef(model)[c("mortgage_rate")]
+std_errors <- sqrt(diag(vcov(model)))[c("mortgage_rate")]
 
 #Create data needed to plot confidence intervals
 plot_data <- data.frame(
@@ -751,6 +784,42 @@ plot_data <- data.frame(
 
 #create plot of coefficients and confidence interval
 ggplot(plot_data, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error,
+                                           ymax = Estimate + 1.96 * Std_Error)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  labs(title = "Coefficients and Confidence Intervals",
+       x = "Coefficient",
+       y = "Estimate") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#### **Model 1**
+```{r regression_1, echo=FALSE, message=FALSE, }
+#Create a simple multilinear regression model
+model1 <- lm(homeownership_rate ~ mortgage_rate + hpi + median_income +
+               unemployment_rate + rent_burden + perm_per_person + state + 
+               as.factor(year), data = merged )
+
+#Summarize model
+print(summary(model1))
+
+#Create coefficients and standard errors
+coefficients <- coef(model1)[c("mortgage_rate", "hpi", "median_income", 
+                               "unemployment_rate", "rent_burden")]
+std_errors <- sqrt(diag(vcov(model1)))[c("mortgage_rate", "hpi", 
+                                         "median_income", "unemployment_rate", 
+                                         "rent_burden")]
+
+#Create data needed to plot confidence intervals
+plot_data1 <- data.frame(
+  Coefficient = names(coefficients),
+  Estimate = coefficients,
+  Std_Error = std_errors
+)
+
+#create plot of coefficients and confidence interval
+ggplot(plot_data1, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error,
                                            ymax = Estimate + 1.96 * Std_Error)) +
   geom_point(size = 3) +
   geom_errorbar(width = 0.2) +
@@ -777,16 +846,19 @@ print(summary_clustered)
 #Create a simple multilinear regression model
 model2 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 + 
                mortgage_rate_lag2 + mortgage_rate_lag3 + hpi + median_income +
-               unemployment_rate + state + as.factor(year), data = merged )
+               unemployment_rate + rent_burden + perm_per_person + 
+               state + as.factor(year), data = merged )
 
 #Summarize model
 print(summary(model2))
 
 #Create coefficients and standard errors
 coefficients <- coef(model2)[c("mortgage_rate", "mortgage_rate_lag1", "mortgage_rate_lag2", 
-                               "mortgage_rate_lag3", "hpi", "median_income", "unemployment_rate")]
+                               "mortgage_rate_lag3", "hpi", "median_income", "unemployment_rate",
+                               "rent_burden")]
 std_errors <- sqrt(diag(vcov(model2)))[c("mortgage_rate", "mortgage_rate_lag1", "mortgage_rate_lag2", 
-                               "mortgage_rate_lag3", "hpi", "median_income", "unemployment_rate")]
+                               "mortgage_rate_lag3", "hpi", "median_income", "unemployment_rate",
+                               "rent_burden")]
 
 #Create data needed to plot confidence intervals
 plot_data2 <- data.frame(
@@ -797,6 +869,81 @@ plot_data2 <- data.frame(
 
 #create plot of coefficients and confidence interval
 ggplot(plot_data2, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error,
+                                           ymax = Estimate + 1.96 * Std_Error)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  labs(title = "Coefficients and Confidence Intervals",
+       x = "Coefficient",
+       y = "Estimate") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#### **Model 3**
+```{r regression_3, echo=FALSE, message=FALSE, }
+#Create a simple multilinear regression model
+model3 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 + 
+               mortgage_rate_lag2 + hpi + median_income +
+               unemployment_rate + rent_burden + perm_per_person + state +
+               as.factor(year), data = merged )
+
+#Summarize model
+print(summary(model3))
+
+#Create coefficients and standard errors
+coefficients <- coef(model3)[c("mortgage_rate", "mortgage_rate_lag1", "mortgage_rate_lag2", 
+                               "hpi", "median_income", "unemployment_rate",
+                               "rent_burden")]
+std_errors <- sqrt(diag(vcov(model3)))[c("mortgage_rate", "mortgage_rate_lag1", "mortgage_rate_lag2", 
+                               "hpi", "median_income", "unemployment_rate",
+                               "rent_burden")]
+
+#Create data needed to plot confidence intervals
+plot_data3 <- data.frame(
+  Coefficient = names(coefficients),
+  Estimate = coefficients,
+  Std_Error = std_errors
+)
+
+#create plot of coefficients and confidence interval
+ggplot(plot_data3, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error,
+                                           ymax = Estimate + 1.96 * Std_Error)) +
+  geom_point(size = 3) +
+  geom_errorbar(width = 0.2) +
+  labs(title = "Coefficients and Confidence Intervals",
+       x = "Coefficient",
+       y = "Estimate") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#### **Model 4**
+```{r regression_4, echo=FALSE, message=FALSE, }
+#Create a simple multilinear regression model
+model4 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 + 
+               hpi + median_income + unemployment_rate + rent_burden + 
+               perm_per_person + state + as.factor(year), data = merged )
+
+#Summarize model
+print(summary(model4))
+
+#Create coefficients and standard errors
+coefficients <- coef(model4)[c("mortgage_rate", "mortgage_rate_lag1", "hpi", 
+                               "median_income", "unemployment_rate",
+                               "rent_burden")]
+std_errors <- sqrt(diag(vcov(model4)))[c("mortgage_rate", "mortgage_rate_lag1", 
+                                         "hpi", "median_income", 
+                                         "unemployment_rate", "rent_burden")]
+
+#Create data needed to plot confidence intervals
+plot_data4 <- data.frame(
+  Coefficient = names(coefficients),
+  Estimate = coefficients,
+  Std_Error = std_errors
+)
+
+#create plot of coefficients and confidence interval
+ggplot(plot_data4, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error,
                                            ymax = Estimate + 1.96 * Std_Error)) +
   geom_point(size = 3) +
   geom_errorbar(width = 0.2) +
