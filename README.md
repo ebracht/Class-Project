@@ -564,9 +564,8 @@ merged <- left_join(
 
 ### **Correlation Matrix:**
 
-![](README_files/figure-gfm/figure_3-1.png)<!-- -->
-
-### **Missingness check:**
+![](README_files/figure-gfm/figure_3-1.png)<!-- --> \### **Missingness
+check:**
 
     ## # A tibble: 8 × 2
     ##   variable           missing_count

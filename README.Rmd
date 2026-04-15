@@ -1,10 +1,10 @@
 ---
 title: "Class Project"
 output:
+  html_document: default
   github_document:
     toc: true
     toc_depth: 2
-  html_document: default
 ---
 
 
@@ -664,7 +664,8 @@ p1 / p2 / p3
 ```
 
 ### **Correlation Matrix:**
-```{r figure_3, echo=FALSE, message=FALSE, }
+
+```{r figure_3, echo=FALSE, message=FALSE}
 
 corr_data <- merged %>%
   select(
@@ -682,13 +683,29 @@ corr_matrix <- cor(corr_data, use = "complete.obs")
 
 corr_df <- as.data.frame(as.table(corr_matrix))
 
-# keep only upper triangle
+# labels
+var_labels <- c(
+  homeownership_rate = "Homeownership Rate",
+  median_income      = "Median Income",
+  population         = "Population",
+  hpi                = "House Price Index",
+  unemployment_rate  = "Unemployment Rate",
+  mortgage_rate      = "Mortgage Rate",
+  rent_burden        = "Rent Burden",
+  perm_per_person    = "Housing Permits per Person"
+)
+
+# keep only upper triangle, relabel
 corr_df <- corr_df %>%
   mutate(
     Var1 = factor(Var1, levels = colnames(corr_matrix)),
     Var2 = factor(Var2, levels = colnames(corr_matrix))
   ) %>%
-  filter(as.numeric(Var1) <= as.numeric(Var2))
+  filter(as.numeric(Var1) <= as.numeric(Var2)) %>%
+  mutate(
+    Var1 = factor(var_labels[as.character(Var1)], levels = var_labels),
+    Var2 = factor(var_labels[as.character(Var2)], levels = var_labels)
+  )
 
 ggplot(corr_df, aes(x = Var1, y = Var2, fill = Freq)) +
   geom_tile(color = "white") +
@@ -711,11 +728,7 @@ ggplot(corr_df, aes(x = Var1, y = Var2, fill = Freq)) +
     axis.text.x = element_text(angle = 45, hjust = 1),
     panel.grid = element_blank()
   )
-
-
-
 ```
-
 ### **Missingness check:**
 ```{r missing_check, echo=FALSE, message=FALSE, }
 merged %>%
