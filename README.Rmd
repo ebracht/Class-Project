@@ -241,7 +241,8 @@ packages <- c(
   "patchwork",
   # regression
   "sandwich",
-  "lmtest"
+  "lmtest",
+  "stargazer"
 )
 
 # checks if package available (if not - install packages)
@@ -264,7 +265,7 @@ census_api_key("894b3464183cec8f6c0fa053eb34d0d878de682e")
 fredr_set_key("8351bf4f459d0e8c92d56f50021947d8")
 ```
 
-### **Import online data:**
+### **Import Data:**
 ```{r import_data, message=FALSE, warning=FALSE, include=FALSE}
 #Set years to include the last two decades, excluding 2020 due to the COVID-19 pandemic.
 years <- c(2005:2019, 2021:2024)
@@ -415,7 +416,6 @@ mortgage_annual <- mortgage_raw %>%
   )
 ```
 
-### **Import local data:**
 ```{r import_local_data, message=FALSE, warning=FALSE, include=FALSE}
 # Import Local Data
 fhfa_raw <- read_csv("Data/hpi_at_state (1).csv", col_names = FALSE) %>%
@@ -468,7 +468,7 @@ state_unemployment <- bls_merged %>%
   arrange(state, year)
 ```
 
-**Merge imported data:**
+## **Merge Imported Data:**
 ```{r merge_data, message=FALSE, warning=FALSE}
 #Merge the data sets by year and state
 merged <- left_join(
@@ -515,7 +515,7 @@ merged <- merged %>%
 ```
 
 ## **Compute Summary Statistics**
-### **Compute population summary statistics:**
+### **Compute Population Summary Statistics:**
 ```{r pop_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for population:")
 summary(merged$population)
@@ -523,7 +523,7 @@ cat("Standard Deviation:", sd(merged$population))
 cat("Variance:", var(merged$population))
 ```
 
-### **Compute median income summary statistics:**
+### **Compute Median Income Summary Statistics:**
 ```{r medinc_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for median income:")
 summary(merged$median_income)
@@ -531,7 +531,7 @@ cat("Standard Deviation:", sd(merged$median_income))
 cat("Variance:", var(merged$median_income))
 ```
 
-### **Compute home ownership rate summary statistics:**
+### **Compute Home Ownership Rate Summary Statistics:**
 ```{r ownrate_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for homeownership rate:")
 summary(merged$homeownership_rate)
@@ -539,7 +539,7 @@ cat("Standard Deviation:", sd(merged$homeownership_rate))
 cat("Variance:", var(merged$homeownership_rate))
 ```
 
-### **Compute mortgage rate summary statistics:**
+### **Compute Mortgage Rate Summary Statistics:**
 ```{r mortgrate_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for mortgage rate:")
 summary(merged$mortgage_rate)
@@ -547,7 +547,7 @@ cat("Standard Deviation:", sd(merged$mortgage_rate))
 cat("Variance:", var(merged$mortgage_rate))
 ```
 
-### **Compute HPI summary statistics**
+### **Compute HPI Summary Statistics**
 ```{r HPI_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for HPI:")
 summary(merged$hpi)
@@ -555,34 +555,34 @@ cat("Standard Deviation:", sd(merged$hpi))
 cat("Variance:", var(merged$hpi))
 ```
 
-### **Compute unemployment summary statistics**
+### **Compute Unemployment Summary Statistics**
 ```{r Unemployment_summary_stats, echo=FALSE, message=FALSE, }
 cat("Summary statistics for Unemployment:")
 summary(merged$unemployment_rate)
 cat("Standard Deviation:", sd(merged$unemployment_rate))
 cat("Variance:", var(merged$unemployment_rate))
 ```
-### **Compute rent burden summary statistics:**
+### **Compute Rent Burden Summary Statistics:**
 ```{r rent_burden_summary_stats, echo=FALSE, message=FALSE, warning = FALSE}
 summary(merged$rent_burden)
 cat("Standard Deviation:", sd(merged$rent_burden, na.rm = TRUE))
 cat("Variance:", var(merged$rent_burden, na.rm = TRUE))
 ```
 
-### **Compute rent burden summary statistics:**
+### **Compute Rent Burden Summary Statistics:**
 ```{r perm_per_person_summary_stats, echo=FALSE, message=FALSE, warning = FALSE}
 summary(merged$perm_per_person)
 cat("Standard Deviation:", sd(merged$perm_per_person, na.rm = TRUE))
 cat("Variance:", var(merged$perm_per_person, na.rm = TRUE))
 ```
 
-## **Create Visualizations**
+## **Visualizations and Analysis**
 
-### **Plot histograms of key variables:**
+### **Plot Histograms of Key Variables:**
 ```{r figure_1, echo=FALSE, message=FALSE, warning = FALSE}
 key_vars_labs <- c("homeownership_rate" = "Homeownership Rate", "hpi" = "House Price Index", "median_income" = "Median Income", "population" = "Population", "rent_burden" = "Rent Burden", "unemployment_rate" = "Unemployment Rate", "perm_per_person" = "Housing Permits per Person")
 
-# Histogram plots of key variables
+#Create histogram plots of key variables
 merged %>%
   select(
     homeownership_rate,
@@ -610,7 +610,7 @@ merged %>%
   theme_minimal()
 ```
 
-### **Plot mortgage rate and national average homeownership rate:**
+### **Plot Mortgage Rate and National Average Homeownership Rate:**
 ```{r figure_2, echo=FALSE, message=FALSE, }
 # Average homeownership rate over time
 avg_homeownership_ts <- merged %>%
@@ -664,9 +664,9 @@ p1 / p2 / p3
 ```
 
 ### **Correlation Matrix:**
-
 ```{r figure_3, echo=FALSE, message=FALSE}
-
+#Create correlation matrix
+#Select variables of interest
 corr_data <- merged %>%
   select(
     homeownership_rate,
@@ -707,6 +707,7 @@ corr_df <- corr_df %>%
     Var2 = factor(var_labels[as.character(Var2)], levels = var_labels)
   )
 
+#Plot the correlation matrix
 ggplot(corr_df, aes(x = Var1, y = Var2, fill = Freq)) +
   geom_tile(color = "white") +
   geom_text(aes(label = sprintf("%.2f", Freq)), size = 3.5) +
@@ -729,8 +730,10 @@ ggplot(corr_df, aes(x = Var1, y = Var2, fill = Freq)) +
     panel.grid = element_blank()
   )
 ```
-### **Missingness check:**
+
+### **Missingness Check:**
 ```{r missing_check, echo=FALSE, message=FALSE, }
+#Check for missing obsevations
 merged %>%
   summarise(
     across(
@@ -753,8 +756,11 @@ merged %>%
     values_to = "missing_count"
   )
 ```
-### **Other plots:**
+
+### **Other Plots:**
 ```{r figure_4, echo=FALSE, message=FALSE, }
+#Create lines of best fit for key variables
+#Identify key variables
 kpi_labs <- c("hpi" = "House Price Index",
               "median_income" = "Median Income", 
               "mortgage_rate" = "Mortgage Rate", 
@@ -762,7 +768,7 @@ kpi_labs <- c("hpi" = "House Price Index",
               "rent_burden" = "Rent Burden", 
               "unemployment_rate" = "Unemployment Rate")
 
-
+#Plot the lines of best fit
 merged %>%
   select(
     homeownership_rate,
@@ -791,6 +797,7 @@ merged %>%
 ```
 
 ```{r figure_5, echo=FALSE, message=FALSE, }
+#Create box plot for homeownership rate by state
 merged %>%
   ggplot(aes(x = reorder(state, homeownership_rate, median), y = homeownership_rate)) +
   geom_boxplot(fill = "steelblue", alpha = 0.7) +
@@ -802,9 +809,10 @@ merged %>%
   ) +
   theme_minimal()
 ```
-## **Analysis**
-### **Multicollinearity check:**
+
+### **Multicollinearity Check:**
 ```{r multicollinearity_check, echo=FALSE, message=FALSE, }
+#Check for multicolinearity
 vif_model <- lm(
   homeownership_rate ~ mortgage_rate + hpi + unemployment_rate +
     median_income + rent_burden + perm_per_person,
@@ -814,7 +822,9 @@ vif_model <- lm(
 vif(vif_model)
 ```
 
-```{r lag_variables, echo=FALSE, message=FALSE, }
+### **Create Lag Variables:**
+```{r lag_variables, message=FALSE, }
+#Create lag variables
 merged <- merged %>%
   arrange(state, year) %>%
   group_by(state) %>%
@@ -829,17 +839,20 @@ merged <- merged %>%
   ungroup()
 ```
 
-### **Regression Analysis**
+## **Regression Analysis**
 For directions on how to conduct multilinear regression and plot confidence intervals, [click here](https://www.geeksforgeeks.org/r-language/how-to-use-the-coeftest-function-in-r/).
 
-#### **Basic Model**
-```{r regression_basic, echo=FALSE, message=FALSE, }
+### **Basic Model**
+```{r regression_basic, echo=FALSE, message=FALSE, warning = FALSE}
 #Create a simple multilinear regression model
 model <- lm(homeownership_rate ~ mortgage_rate + state + 
                as.factor(year), data = merged )
 
 #Summarize model
-print(summary(model))
+stargazer(model, type="text", digits = 2, 
+          title = "Table 1: Simple OLS Regression", style = "qje",
+          dep.var.labels = "Homeownership Rate", keep=c("mortgage_rate"), 
+          covariate.labels=c("Mortgage Rate"))
 
 #Create coefficients and standard errors
 coefficients <- coef(model)[c("mortgage_rate")]
@@ -865,15 +878,21 @@ ggplot(plot_data, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * St
 
 ```
 
-#### **Model 1**
-```{r regression_1, echo=FALSE, message=FALSE, }
+### **Model 1**
+```{r regression_1, echo=FALSE, message=FALSE, warning = FALSE}
 #Create a simple multilinear regression model
 model1 <- lm(homeownership_rate ~ mortgage_rate + hpi + median_income +
                unemployment_rate + rent_burden + perm_per_person + state + 
                as.factor(year), data = merged )
 
 #Summarize model
-print(summary(model1))
+stargazer(model1, type="text", digits = 2, 
+          title = "Table 2: OLS Regression with Controls", style = "qje",
+          dep.var.labels = "Homeownership Rate", keep=c("mortgage_rate", 
+          "hpi", "median_income", "unemployment_rate","rent_burden", 
+          "perm_per_person"), covariate.labels=c("Mortgage Rate", 
+          "House Price Index", "Median Income", "Unemployment Rate",
+          "Rent Burden", "Housing Permits per Person"))
 
 #Create coefficients and standard errors
 coefficients <- coef(model1)[c("mortgage_rate", "hpi", "median_income", 
@@ -909,19 +928,17 @@ ggplot(plot_data1, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * S
   
 ```
 
-#### **Model 1 with Clustered Standard Errors**
 ```{r clustered_standarderrors, echo=FALSE, message=FALSE, }
-#Calculate clustered standard errors
+#Calculate clustered standard errors for Model 1
 model1_cluster_se <- vcovCL(model1, cluster = ~ state)
 summary_clustered <- coeftest(model1, vcov = model1_cluster_se)
-print(summary_clustered)
 
 
 ```
 
 
-#### **Model 2**
-```{r regression_2, echo=FALSE, message=FALSE, }
+### **Model 2**
+```{r regression_2, echo=FALSE, message=FALSE, warning = FALSE}
 #Create a simple multilinear regression model
 model2 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 + 
                mortgage_rate_lag2 + mortgage_rate_lag3 + hpi + median_income +
@@ -929,7 +946,15 @@ model2 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 +
                state + as.factor(year), data = merged )
 
 #Summarize model
-print(summary(model2))
+stargazer(model2, type="text", digits = 2, 
+          title = "Table 3: OLS Regression with 3 Lags", style = "qje",
+          dep.var.labels = "Homeownership Rate", keep=c("mortgage_rate", 
+          "mortgage_rate_lag1", "mortgage_rate_lag2", "mortgage_rate_lag3", 
+          "hpi", "median_income", "unemployment_rate","rent_burden", 
+          "perm_per_person"), covariate.labels=c("Mortgage Rate", 
+          "Lagged Mortgage Rate (1)", "Lagged Mortgage Rate (2)",
+          "Lagged Mortgage Rate (3)", "House Price Index", "Median Income",
+          "Unemployment Rate","Rent Burden", "Housing Permits per Person"))
 
 #Create coefficients and standard errors
 coefficients <- coef(model2)[c("mortgage_rate", "mortgage_rate_lag1", "mortgage_rate_lag2", 
@@ -966,8 +991,8 @@ ggplot(plot_data2, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * S
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-#### **Model 3**
-```{r regression_3, echo=FALSE, message=FALSE, }
+### **Model 3**
+```{r regression_3, echo=FALSE, message=FALSE, warning = FALSE}
 #Create a simple multilinear regression model
 model3 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 + 
                mortgage_rate_lag2 + hpi + median_income +
@@ -975,7 +1000,15 @@ model3 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 +
                as.factor(year), data = merged )
 
 #Summarize model
-print(summary(model3))
+stargazer(model2, type="text", digits = 2, 
+          title = "Table 4: OLS Regression with 2 Lags", style = "qje",
+          dep.var.labels = "Homeownership Rate", keep=c("mortgage_rate", 
+          "mortgage_rate_lag1", "mortgage_rate_lag2", 
+          "hpi", "median_income", "unemployment_rate","rent_burden", 
+          "perm_per_person"), covariate.labels=c("Mortgage Rate", 
+          "Lagged Mortgage Rate (1)", "Lagged Mortgage Rate (2)",
+          "House Price Index", "Median Income",
+          "Unemployment Rate","Rent Burden", "Housing Permits per Person"))
 
 #Create coefficients and standard errors
 coefficients <- coef(model3)[c("mortgage_rate", "mortgage_rate_lag1", "mortgage_rate_lag2", 
@@ -1011,15 +1044,23 @@ ggplot(plot_data3, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * S
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-#### **Model 4**
-```{r regression_4, echo=FALSE, message=FALSE, }
+### **Model 4**
+```{r regression_4, echo=FALSE, message=FALSE, warning = FALSE}
 #Create a simple multilinear regression model
 model4 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 + 
                hpi + median_income + unemployment_rate + rent_burden + 
                perm_per_person + state + as.factor(year), data = merged )
 
 #Summarize model
-print(summary(model4))
+stargazer(model2, type="text", digits = 2, 
+          title = "Table 5: OLS Regression with 1 Lag", style = "qje",
+          dep.var.labels = "Homeownership Rate", keep=c("mortgage_rate", 
+          "mortgage_rate_lag1", 
+          "hpi", "median_income", "unemployment_rate","rent_burden", 
+          "perm_per_person"), covariate.labels=c("Mortgage Rate", 
+          "Lagged Mortgage Rate (1)",
+          "House Price Index", "Median Income",
+          "Unemployment Rate","Rent Burden", "Housing Permits per Person"))
 
 #Create coefficients and standard errors
 coefficients <- coef(model4)[c("mortgage_rate", "mortgage_rate_lag1", "hpi", 
@@ -1050,4 +1091,20 @@ ggplot(plot_data4, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * S
                    "unemployment_rate" = "Unemployment Rate"))+
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### **Compare Models**
+```{r regression_comparison, echo=FALSE, message=FALSE, warning = FALSE}
+#Compare regression models using stargazer
+stargazer(model1,model2,model3,model4, type="text", digits = 2, 
+          title = "Table 6: Regression Comparisons)", style = "qje",
+          column.labels = c('OLS', "OLS - 3 Lags", "OLS - 2 Lags", "OLS - 1 Lag"),
+          dep.var.labels = "Homeownership Rate", keep=c("mortgage_rate", 
+          "mortgage_rate_lag1", "mortgage_rate_lag2", "mortgage_rate_lag3", 
+          "hpi", "median_income", "unemployment_rate","rent_burden", 
+          "perm_per_person"), covariate.labels=c("Mortgage Rate", 
+          "Lagged Mortgage Rate (1)", "Lagged Mortgage Rate (2)",
+          "Lagged Mortgage Rate (3)", "House Price Index", "Median Income",
+          "Unemployment Rate","Rent Burden", "Housing Permits per Person"))
+
 ```
