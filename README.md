@@ -1,17 +1,61 @@
 Class Project
 ================
 
-- [Checkpoint 1: Progress on Eight Major
-  Tasks](#checkpoint-1-progress-on-eight-major-tasks)
-- [Research Topic](#research-topic)
-- [Meeting Minutes and Personal
-  Contributions](#meeting-minutes-and-personal-contributions)
-- [Load Packages, Setup API Keys, Import
-  Data](#load-packages-setup-api-keys-import-data)
-- [**Compute Summary Statistics**](#compute-summary-statistics)
-- [**Create Visualizations**](#create-visualizations)
+- [Class Project](#class-project)
+  - [Repository Guide](#repository-guide)
+  - [Checkpoint 1: Progress on Eight Major
+    Tasks](#checkpoint-1-progress-on-eight-major-tasks)
+  - [Research Topic](#research-topic)
+  - [Meeting Minutes and Personal
+    Contributions](#meeting-minutes-and-personal-contributions)
+  - [Load Packages, Setup API Keys, Import
+    Data](#load-packages-setup-api-keys-import-data)
+  - [**Compute Summary Statistics**](#compute-summary-statistics)
+  - [**Create Visualizations**](#create-visualizations)
 
 ### **This landing page displays the knitted output of our README.Rmd file. For the code behind the analysis and figures shown below, please consult the README.Rmd file.**
+
+# Class Project
+
+## Repository Guide
+
+This repository contains our group project for Software Tools for Data
+Analysis. Our project studies how mortgage interest rates and housing
+prices affect homeownership rates across U.S. states over time. The
+final audience for this work is Scott Turner, U.S. Secretary of Housing
+and Urban Development (HUD).
+
+### Branch Structure
+
+- `main`: current working branch for the final project deliverables
+- `Checkpoint-1` branch: preserved as a historical archive of our first
+  checkpoint submission
+
+### Repository Contents
+
+- `README.Rmd`: source file for this repository landing page
+- `README.md`: knitted GitHub-facing version of the README
+- `Data/`: raw and cleaned data files used in the analysis
+- `Report Outline.docx`: working outline for the written report
+- `README_files/`: figures generated from the README
+
+### Team Workflow
+
+To keep the repository organized, team members should: 1. Pull the most
+recent version of the repository before starting work 2. Make changes
+locally in the appropriate files 3. Knit `README.Rmd` after updating it
+so that `README.md` stays current 4. Commit changes with clear commit
+messages 5. Push updates after meaningful progress
+
+### Current Project Responsibilities
+
+- Ryan: Introduction, Data Summary, README/repository instructions
+- Levi: Data Analytics
+- Liz: Conclusion, Policy Recommendations, repository/class page
+  coordination
+
+This README serves as the main landing page for our project progress,
+documentation, meeting notes, and selected analysis outputs.
 
 ## Checkpoint 1: Progress on Eight Major Tasks
 
@@ -311,8 +355,6 @@ In advance of Meeting 6, we plan to look into:
 feedback  
 - Lags in mortgage and home ownership rates
 
-## Load Packages, Setup API Keys, Import Data
-
 ### **Meeting 6 (03/30)**
 
 We reviewed the feedback on our Checkpoint 1 submission and the what we
@@ -326,7 +368,7 @@ begin preparing to work towards Checkpoint 2:
 - Ryan: Clean repositor and make image file names more descriptive  
 - All: Try to get more familiar working with datasets we plan to use
 
-### **Meeting 6 (04/06)**
+### **Meeting 7 (04/06)**
 
 We discussed progress we had made since our last meeting. Liz was
 coordinating with Professor Chale on how to import our repository to the
@@ -351,6 +393,22 @@ follows:
   - Meeting to meeting
   - Contributions
 - Check in on submission/last steps next week
+
+### **Meeting 8 (04/13)**
+
+We again discussed progress we had made since our last meeting. We
+assessed what remained before our Checkpoint 2 submission due Wednesday
+(04/15):
+
+- Fix formatting of and update meeting/contribuion notes (Liz)  
+- Clean data labels (Liz)  
+- Shorten regression tables (Levi)  
+- Knit latest version of README (Ryan)  
+- Finalize outline (Liz - add section/read over & finalize)  
+- Update on eight major tasks (Levi)  
+- Create Checkpoint 2 branch before submitting / submit (Levi)
+
+## Load Packages, Setup API Keys, Import Data
 
 ### **Load Required Packages:**
 

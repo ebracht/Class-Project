@@ -1,10 +1,10 @@
 ---
 title: "Class Project"
 output:
-  html_document: default
   github_document:
     toc: true
     toc_depth: 2
+  html_document: default
 ---
 
 
@@ -165,8 +165,6 @@ In advance of Meeting 6, we plan to look into:
 - How home ownership impacts wealth for households, per topic submission feedback  
 - Lags in mortgage and home ownership rates  
 
-## Load Packages, Setup API Keys, Import Data
-
 ### **Meeting 6 (03/30)**
 We reviewed the feedback on our Checkpoint 1 submission and the what we need to work on for Checkpoint 2. In advance of our meeting next week, we made a list of the following action items to address the feedback and begin preparing to work towards Checkpoint 2:
 
@@ -176,7 +174,7 @@ We reviewed the feedback on our Checkpoint 1 submission and the what we need to 
 - Ryan: Clean repositor and make image file names more descriptive  
 - All: Try to get more familiar working with datasets we plan to use  
 
-### **Meeting 6 (04/06)**
+### **Meeting 7 (04/06)**
 We discussed progress we had made since our last meeting. Liz was coordinating with Professor Chale on how to import our repository to the group page. Ryan created several additional  figures to inform the data summary and test for missingness and multicolinearity. Levi created a multilinear regression model and tested variable significance with and without clustered standard errors. To prepare for Checkpoint 2, we assigned each person to (a) section(s) of the report for the purposes of drafting the outline. Those assignments and other next steps are as follows:
 
 - Report Outline
@@ -193,10 +191,22 @@ We discussed progress we had made since our last meeting. Liz was coordinating w
     - Contributions
 - Check in on submission/last steps next week
 
+### **Meeting 8 (04/13)**
+We again discussed progress we had made since our last meeting. We assessed what remained before our Checkpoint 2 submission due Wednesday (04/15):  
+
+- Fix formatting of and update meeting/contribuion notes (Liz)  
+- Clean data labels (Liz)   
+- Shorten regression tables (Levi)  
+- Knit latest version of README (Ryan)  
+- Finalize outline (Liz - add section/read over & finalize)    
+- Update on eight major tasks (Levi)   
+- Create Checkpoint 2 branch before submitting / submit (Levi)  
 
 ```{r clear_environment, include=FALSE}
 remove(list=ls())
 ```
+
+## Load Packages, Setup API Keys, Import Data
 
 ### **Load Required Packages:**
 
@@ -570,6 +580,8 @@ cat("Variance:", var(merged$perm_per_person, na.rm = TRUE))
 
 ### **Plot histograms of key variables:**
 ```{r figure_1, echo=FALSE, message=FALSE, warning = FALSE}
+key_vars_labs <- c("homeownership_rate" = "Homeownership Rate", "hpi" = "House Price Index", "median_income" = "Median Income", "population" = "Population", "rent_burden" = "Rent Burden", "unemployment_rate" = "Unemployment Rate", "perm_per_person" = "Housing Permits per Person")
+
 # Histogram plots of key variables
 merged %>%
   select(
@@ -588,7 +600,8 @@ merged %>%
   ) %>%
   ggplot(aes(x = value)) +
   geom_histogram(bins = 30, fill = "steelblue", color = "white") +
-  facet_wrap(~ variable, scales = "free", ncol = 2) +
+  facet_wrap(~ variable, scales = "free", ncol = 2, 
+             labeller = as_labeller(key_vars_labs)) +
   labs(
     title = "Histograms of Key Variables",
     x = "Value",
@@ -611,7 +624,7 @@ avg_homeownership_ts <- merged %>%
 # Plot using fpp3
 p1 <- autoplot(avg_homeownership_ts, avg_homeownership_rate) +
   labs(
-    title = "Average State homeownership Rate Over Time",
+    title = "Average State Homeownership Rate Over Time",
     x = "Year",
     y = "homeownership Rate (%)"
   )
@@ -652,6 +665,7 @@ p1 / p2 / p3
 
 ### **Correlation Matrix:**
 ```{r figure_3, echo=FALSE, message=FALSE, }
+
 corr_data <- merged %>%
   select(
     homeownership_rate,
@@ -697,6 +711,9 @@ ggplot(corr_df, aes(x = Var1, y = Var2, fill = Freq)) +
     axis.text.x = element_text(angle = 45, hjust = 1),
     panel.grid = element_blank()
   )
+
+
+
 ```
 
 ### **Missingness check:**
@@ -725,6 +742,14 @@ merged %>%
 ```
 ### **Other plots:**
 ```{r figure_4, echo=FALSE, message=FALSE, }
+kpi_labs <- c("hpi" = "House Price Index",
+              "median_income" = "Median Income", 
+              "mortgage_rate" = "Mortgage Rate", 
+              "perm_per_person" = "Housing Permits per Person", 
+              "rent_burden" = "Rent Burden", 
+              "unemployment_rate" = "Unemployment Rate")
+
+
 merged %>%
   select(
     homeownership_rate,
@@ -743,11 +768,11 @@ merged %>%
   ggplot(aes(x = value, y = homeownership_rate)) +
   geom_point(alpha = 0.4) +
   geom_smooth(method = "lm", se = FALSE, color = "red") +
-  facet_wrap(~ variable, scales = "free_x", ncol = 2) +
+  facet_wrap(~ variable, scales = "free_x", ncol = 2, labeller = as_labeller(kpi_labs)) +
   labs(
     title = "Homeownership Rate vs. Key Predictors",
     x = "Predictor",
-    y = "Homeownership Rate"
+    y = "Homeownership Rate",
   ) +
   theme_minimal()
 ```
@@ -815,15 +840,16 @@ plot_data <- data.frame(
 )
 
 #create plot of coefficients and confidence interval
-ggplot(plot_data, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error,
-                                           ymax = Estimate + 1.96 * Std_Error)) +
+ggplot(plot_data, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * Std_Error, ymax = Estimate + 1.96 * Std_Error)) +
   geom_point(size = 3) +
   geom_errorbar(width = 0.2) +
   labs(title = "Coefficients and Confidence Intervals",
        x = "Coefficient",
        y = "Estimate") +
+  scale_x_discrete(labels = c(mortgage_rate = "Mortgage Rate"))+
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 ```
 
 #### **Model 1**
@@ -858,8 +884,16 @@ ggplot(plot_data1, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * S
   labs(title = "Coefficients and Confidence Intervals",
        x = "Coefficient",
        y = "Estimate") +
+  scale_x_discrete(labels = c(
+    hpi = "House Price Index",
+    median_income = "Median Income",
+    mortgage_rate = "Mortgage Rate",
+    rent_burden = "Rent Burden",
+    unemployment_rate = "Unemployment Rate"
+  ))+
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
 ```
 
 #### **Model 1 with Clustered Standard Errors**
@@ -907,6 +941,14 @@ ggplot(plot_data2, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * S
   labs(title = "Coefficients and Confidence Intervals",
        x = "Coefficient",
        y = "Estimate") +
+  scale_x_discrete(labels = c("hpi" = "House Price Index",
+                   "median_income" = "Median Income",
+                   "mortgage_rate"= "Mortgage Rate", 
+                   "mortgage_rate_lag1"= "Lagged Mortgage Rate (1)",
+                   "mortgage_rate_lag2"= "Lagged Mortgage Rate (2)",
+                   "mortgage_rate_lag3"= "Lagged Mortgage Rate (3)",
+                   "rent_burden" = "Rent Burden",
+                   "unemployment_rate" = "Unemployment Rate"))+
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
@@ -946,6 +988,13 @@ ggplot(plot_data3, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * S
        x = "Coefficient",
        y = "Estimate") +
   theme_minimal() +
+  scale_x_discrete(labels=c("hpi" = "House Price Index",
+                   "median_income" = "Median Income",
+                   "mortgage_rate"= "Mortgage Rate", 
+                   "mortgage_rate_lag1"= "Lagged Mortgage Rate (1)",
+                   "mortgage_rate_lag2"= "Lagged Mortgage Rate (2)",
+                   "rent_burden" = "Rent Burden",
+                   "unemployment_rate" = "Unemployment Rate"))+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
@@ -963,9 +1012,7 @@ print(summary(model4))
 coefficients <- coef(model4)[c("mortgage_rate", "mortgage_rate_lag1", "hpi", 
                                "median_income", "unemployment_rate",
                                "rent_burden")]
-std_errors <- sqrt(diag(vcov(model4)))[c("mortgage_rate", "mortgage_rate_lag1", 
-                                         "hpi", "median_income", 
-                                         "unemployment_rate", "rent_burden")]
+std_errors <- sqrt(diag(vcov(model4)))[c("mortgage_rate", "mortgage_rate_lag1", "hpi", "median_income", "unemployment_rate", "rent_burden")]
 
 #Create data needed to plot confidence intervals
 plot_data4 <- data.frame(
@@ -982,6 +1029,12 @@ ggplot(plot_data4, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * S
   labs(title = "Coefficients and Confidence Intervals",
        x = "Coefficient",
        y = "Estimate") +
+  scale_x_discrete(labels=c("hpi" = "House Price Index",
+                   "median_income" = "Median Income",
+                   "mortgage_rate"= "Mortgage Rate", 
+                   "mortgage_rate_lag1"= "Lagged Mortgage Rate (1)",
+                   "rent_burden" = "Rent Burden",
+                   "unemployment_rate" = "Unemployment Rate"))+
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
