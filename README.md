@@ -370,7 +370,7 @@ begin preparing to work towards Checkpoint 2:
 - Ryan: Clean repositor and make image file names more descriptive  
 - All: Try to get more familiar working with datasets we plan to use
 
-### **Meeting 6 (04/06)**
+### **Meeting 7 (04/06)**
 
 We discussed progress we had made since our last meeting. Liz was
 coordinating with Professor Chale on how to import our repository to the
