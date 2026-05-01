@@ -58,28 +58,49 @@ documentation, meeting notes, and selected analysis outputs.
 
 # Introduction
 
-Homeownership remains one of the most important pathways to household
-wealth-building and long-term financial stability in the United States.
-At the same time, recent increases in mortgage interest rates and
-housing prices have made homeownership less attainable for many
-households, raising important questions about affordability and access
-across states. In this report, we examine how changes in mortgage rates
-and housing prices relate to homeownership rates over time, with a
-particular focus on variation across U.S. states. By identifying the
-economic factors most strongly associated with homeownership outcomes,
-we aim to provide evidence that can help inform housing policy decisions
-at the federal level.
+Homeownership remains one of the most important pathways to
+wealth-building, stability, and long-term financial security in the
+United States. However, recent housing market conditions have made
+homeownership increasingly difficult to attain for many families and
+individuals. Higher mortgage rates raise the cost of borrowing, while
+rising housing prices increase the upfront and long-term financial
+burden of purchasing a home. These pressures are especially important
+for the U.S. Department of Housing and Urban Development (HUD), which is
+responsible for supporting fair, affordable, and sustainable access to
+housing across the country.
 
-Our analysis is designed to support the policy goals of the U.S.
-Department of Housing and Urban Development by clarifying the extent to
-which borrowing costs, housing market conditions, and broader economic
-variables may influence homeownership. We are especially interested in
-whether rising mortgage rates and rising housing prices place measurable
-downward pressure on homeownership rates, even after accounting for
-other relevant state-level conditions. The findings of this report will
-ultimately be used to develop practical policy recommendations that can
-help improve housing affordability and expand access to homeownership
-for American households.
+This report is written for Scott Turner, U.S. Secretary of Housing and
+Urban Development. As HUD considers how to address challenges with
+affordability, expand access to homeownership, and support stable
+housing markets, policymakers need evidence on which factors are most
+closely associated with changes in homeownership rates. While mortgage
+rates and housing prices are central to the current affordability
+discussion, homeownership is also shaped by broader state-level
+conditions. Some of these include income, unemployment, rent burden, and
+housing supply. For that reason, our analysis examines both the direct
+relationship between borrowing costs, housing prices, and homeownership,
+as well as the role of additional economic and housing market drivers.
+
+Our research question is: **How do mortgage interest rates, housing
+prices, and related state-level economic and housing market conditions
+affect homeownership rates across the United States over time?** To
+answer this question, we construct a state-year panel dataset covering
+U.S. states from 2005 to 2024. We exclude 2020 due to comparability
+issues in one-year American Community Survey data during the COVID-19
+period. We combine public data from the U.S. Census Bureau, Federal
+Reserve Economic Data (FRED), the Federal Housing Finance Agency (FHFA),
+the Bureau of Labor Statistics (BLS), and the Census Building Permits
+Survey.
+
+The results of this analysis can help HUD evaluate which policy levers
+may be most relevant for improving access to homeownership. If
+homeownership rates are strongly related to mortgage rates, housing
+prices, rent burden, or housing supply, then federal housing policies
+can be better targeted toward fixing conditions that most constrain
+citizens from purchasing homes. These decisions have consequences beyond
+individual buyers: homeownership patterns affect household wealth
+accumulation, neighborhood stability, housing market equity, and the
+broader economic health of communities.
 
 # Data Summary
 
@@ -129,23 +150,98 @@ both our descriptive analysis and our regression modeling.
 
 ### **Key Trends Over Time:**
 
-![](README_files/figure-gfm/figure_2-1.png)<!-- -->
+    ## Warning: `autoplot.tbl_ts()` was deprecated in fabletools 0.6.0.
+    ## ℹ Please use `ggtime::autoplot.tbl_ts()` instead.
+    ## ℹ Graphics functions have been moved to the {ggtime} package. Please use
+    ##   `library(ggtime)` instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
-\[Discussion of trends over time.\]
+![](README_files/figure-gfm/figure_2-1.png)<!-- --> Figure 2 shows broad
+time trends in average state homeownership rates, house price index
+values, and 30-year mortgage rates. Average homeownership declined from
+the mid-2000s through the mid-2010s, reaching its lowest point around
+2014–2015 before gradually recovering in the late 2010s and early 2020s.
+Over the same period, the average state house price index increased
+substantially, especially after 2020, suggesting that housing prices
+rose much faster than homeownership rates recovered.
+
+The mortgage rate trend provides additional context. Mortgage rates
+generally declined from the mid-2000s through 2021, but then rose
+sharply in the early 2020s. This creates an important policy concern, as
+even though homeownership partially recovered after the mid-2010s,
+households now face a combination of elevated housing prices and higher
+borrowing costs. Together, these trends suggest that homeownership
+affordability is shaped by multiple pressures at once rather than by any
+single variable alone.
 
 ### **Correlation Matrix:**
 
 ![](README_files/figure-gfm/figure_3-1.png)<!-- -->
 
-\[Discussion of correlation matrix.\]
+Figure 3, the correlation heatmap provides an initial look at the
+relationships among different variables before moving into regression
+analysis. Homeownership has negative correlations with population, rent
+burden, house price index, median income, and unemployment, suggesting
+that states with larger populations, higher housing costs, and greater
+rental affordability pressure tend to have lower homeownership rates.
+The negative relationship with rent burden is especially important
+because it suggests that places where renters face greater financial
+strain may also be places where households have more difficulty
+transitioning into ownership.
+
+The heatmap also shows several relationships among the explanatory
+variables themselves. Median income and house price index have a strong
+positive correlation, indicating that higher-income states also tend to
+have more expensive housing markets. Rent burden is positively
+correlated with population and house price index, which supports the
+broader affordability story that larger and more expensive states tend
+to place more pressure on renters. These correlations help motivate the
+use of multivariable regression, since homeownership is related to
+several overlapping economic and housing market conditions rather than
+one factor in isolation.
 
 ![](README_files/figure-gfm/figure_4-1.png)<!-- -->
 
-\[Discussion of lines of best fit.\]
+Figure 4 compares homeownership rates with several key predictors using
+scatterplots and fitted trend lines. The clearest negative relationship
+appears between rent burden and homeownership: as rent burden increases,
+homeownership rates tend to decline. This supports the idea that states
+where renters face greater financial pressure may also be states where
+households have more difficulty transitioning into homeownership.
+
+House price index, median income, and unemployment rate also show
+negative relationships with homeownership, though the strength and
+interpretation of these patterns vary. The negative relationship between
+house prices and homeownership is consistent with an affordability
+issue, since higher housing costs may make ownership less accessible.
+The median income relationship is more complicated because higher-income
+states may also be states with substantially higher housing costs,
+meaning income alone does not necessarily translate into easier access
+to homeownership. Mortgage rates and housing permits per person show
+slightly positive trend lines in this figure, but these relationships
+should be interpreted cautiously because they do not account for
+differences across states, changes over time, or other overlapping
+economic conditions.
 
 ![](README_files/figure-gfm/figure_5-1.png)<!-- -->
 
-\[Discussion of box and whisker plots.\]
+Figure 5 shows the distribution of homeownership rates by state across
+the study period. States are ordered by their typical homeownership
+rate, making it easy to identify states that consistently have higher or
+lower ownership levels. West Virginia, Michigan, Delaware, Maine, and
+Minnesota appear near the top of the distribution, while New York,
+California, Nevada, Hawaii, and Rhode Island appear near the bottom.
+
+The lower-homeownership states are especially important for HUD because
+many of them are large or high-cost housing markets where affordability
+challenges are likely more severe. For example, California and New York
+have relatively low homeownership rates, which is consistent with the
+broader finding that higher housing costs and rent burden are associated
+with lower ownership. The chart also shows that some states have wider
+ranges than others, meaning homeownership conditions changed more over
+time in certain states while remaining more stable in others.
 
 ### **Multicollinearity Check:**
 
@@ -154,7 +250,16 @@ both our descriptive analysis and our regression modeling.
     ##       rent_burden   perm_per_person 
     ##          1.927072          1.314518
 
-\[Discussion of multicollinearity check.\]
+The multicollinearity check suggests that the predictors can be included
+together in the regression model without serious multicollinearity
+concerns. All variance inflation factor values are below the common
+threshold of 5, and well below the stricter threshold of 10, meaning
+that none of the predictors appears to be excessively redundant with the
+others. The highest values are for house price index and median income,
+which makes sense because states with higher incomes often also have
+higher housing prices. However, these values are still moderate, so the
+model can reasonably estimate the relationship between each predictor
+and homeownership while controlling for the others.
 
 ## **Regression Analysis**
 
@@ -419,7 +524,68 @@ here](https://www.geeksforgeeks.org/r-language/how-to-use-the-coeftest-function-
 
 # Conclusion
 
-\[Conclusion text here.\]
+This project examined how mortgage interest rates, housing prices, and
+related economic and housing market variables are associated with
+homeownership rates across U.S. states over time. To answer this
+question, we constructed a state-year panel dataset combining
+homeownership rates, median income, population, rent burden, mortgage
+rates, house price index values, unemployment rates, and housing permits
+per person. We used descriptive visualizations, correlation analysis,
+state-level distribution plots, multicollinearity checks, and regression
+models to study both broad trends and more specific relationships among
+these variables.
+
+The analysis shows that homeownership rates vary meaningfully across
+both time and states. Average homeownership declined from the mid-2000s
+into the mid-2010s before partially recovering in the late 2010s and
+early 2020s. However, this recovery occurred alongside a sharp rise in
+house price index values and, after 2021, a rapid increase in mortgage
+rates. This suggests that the current housing environment is shaped by
+multiple affordability pressures at once: households face not only
+higher home prices, but also higher borrowing costs.
+
+Several patterns from the visual analysis help clarify the broader
+story. The correlation heatmap and scatterplots suggest that
+homeownership tends to be lower in states with higher population, higher
+rent burden, higher house price index values, and higher unemployment.
+Rent burden appears especially important because it connects the rental
+and ownership sides of the housing market: states where renters are
+already financially strained may also be states where households have
+more difficulty moving into ownership. The box plot by state also shows
+substantial geographic variation, with states such as New York,
+California, Nevada, Hawaii, and Rhode Island consistently showing lower
+homeownership rates than many other states.
+
+The regression analysis adds further support to the idea that
+homeownership is influenced by several overlapping economic and housing
+market conditions. Mortgage rates are generally negatively associated
+with homeownership, especially in the baseline and controlled models,
+which is consistent with the idea that higher borrowing costs reduce
+access to ownership. Housing supply, measured through housing permits
+per person, appears positively associated with homeownership in the
+models, suggesting that states with more residential construction
+activity may have stronger ownership outcomes. Rent burden and
+unemployment also provide important context, although some relationships
+are more complex once controls and lagged variables are included.
+
+There are several limitations to this analysis. First, the project uses
+observational data, so the results should be interpreted as associations
+rather than definitive causal effects. Second, some variables are
+measured at the national level, such as the 30-year mortgage rate, while
+others vary by state and year, which limits how precisely we can isolate
+state-specific mortgage effects. Third, the exclusion of 2020 due to ACS
+comparability issues helps maintain consistency but removes an important
+year from the housing market timeline. Finally, our housing supply
+measure captures permits rather than completed housing units, so it may
+not fully reflect the actual availability of homes.
+
+Future work could improve the analysis by incorporating more localized
+data at the county or metropolitan level, adding measures of housing
+inventory and new construction completions, and exploring differences by
+household income, race, age, or first-time buyer status. Additional
+modeling could also test fixed effects more deeply, examine regional
+differences, or use causal inference methods to better isolate the
+effects of policy-relevant housing market changes.
 
 # Policy Recommendation
 
@@ -476,7 +642,20 @@ TO BE ADDED BY MAY 11.
 
 # References
 
-- <https://fred.stlouisfed.org/series/MORTGAGE30US>
-- <https://www.fhfa.gov/data/hpi/datasets?tab=quarterly-data>
-- <https://www.census.gov/data.html>
-- <https://www.bls.gov/web/laus/laumstrk.htm>
+Federal Housing Finance Agency. (n.d.). *FHFA House Price Index®
+datasets*. Retrieved 2026, from
+<https://www.fhfa.gov/data/house-price-index>
+
+Federal Reserve Bank of St. Louis. (n.d.). *30-year fixed rate mortgage
+average in the United States \[MORTGAGE30US\]*. FRED. Retrieved 2026,
+from <https://fred.stlouisfed.org/series/MORTGAGE30US>
+
+U.S. Bureau of Labor Statistics. (n.d.). *Local Area Unemployment
+Statistics*. Retrieved 2026, from <https://www.bls.gov/lau/>
+
+U.S. Census Bureau. (n.d.). *American Community Survey data via API*.
+Retrieved 2026, from
+<https://www.census.gov/programs-surveys/acs/data/data-via-api.html>
+
+U.S. Census Bureau. (n.d.). *Building Permits Survey*. Retrieved 2026,
+from <https://www.census.gov/permits>
