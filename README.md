@@ -35,7 +35,8 @@ and Urban Development (HUD).
 - `README.Rmd`: source file for this repository landing page
 - `README.md`: knitted GitHub-facing version of the README
 - `Data/`: raw and cleaned data files used in the analysis
-- `Report Outline.docx`: working outline for the written report
+- `Meeting Minutes and Personal Contributions.docx`: a record of
+  previous meetings and contributions
 - `README_files/`: figures generated from the README
 
 # Introduction
@@ -126,48 +127,45 @@ The summary statistics above provide information about central
 tendencies and variation across key variables over the period between
 2005 and 2024 (excluding 2020). Note: these statistics were calculated
 treating each state/year combination as a single observation. Statistics
-reflect state conditions over this period and are not weighted by
+reflect state conditions over this period and are not weighted by state
 population.
 
 The average state had a population of 6.3 million, a median income of
 approximately \$58,000, and an unemployment rate of 5.3 percent over the
 analysis timeframe. The average state homeownership rate was 67 percent,
-while the average national mortgage rate was 4.86 percent. An average of
-just 0.004 housing permits were issued on an annual basis per person,
-and 44 percent of the state population was rent burdened, on average.
+while the average national mortgage rate was 4.9 percent. An average of
+just 0.004 housing permits were issued on annual basis per person, and
+44 percent of the state population was rent burdened, on average.
 
 The homeownership rate ranged from 52 percent to 76 percent, with a
 standard deviation of 4.4 percent. The fact that the average
 homeownership rate (67.0 percent) and median homeownership rate (67.5
-percent) were similar, suggests that the distribution is roughly normal
-(a histogram and accompanying analysis are provided below).
+percent) were similar, suggests that the distribution is symmetric (a
+histogram and accompanying analysis are provided below).
 
 Several potential drivers of the homeownership rate showed substantial
-variation across the analysis timeframe. The mortgage rate ranged from 3
-to 6.8 percent with a standard deviation of 1.2 percent; the housing
+variation across the analysis timeframe. The mortgage rate ranged from
+3.0 to 6.8 percent with a standard deviation of 1.2 percent; the housing
 price index ranged from 184 to 1,230, with a standard deviation of 164;
-and rent burden ranged from 28.3 to 58.1 percent with a standard
-deviation of 4.4 percent. The variation of these variables in our sample
-will allow us to meaningfully test their influence on the homeownership
-rate.
+and rent burden ranged from 28 to 58 percent with a standard deviation
+of 4.4 percent. Because these variables have significant variation
+across states and years, we can meaningfully test their influence on the
+homeownership rate.
 
 ### **Figure 1. Histograms of Key Variables**
 
 ![](README_files/figure-gfm/figure_1-1.png)<!-- -->
 
-The histograms shown above provide useful information about the
-distribution of homeownership rate and factors that may influence it.
-The histograms were generally unimodal and bell shaped, though several
-of them revealed significant kurtosis. Consistent with the observation
-above that the mean and median homeownership rate are similar, the
-histogram for the homeownership rate shows a mostly normal distribution,
-albeit slightly skewed to the left. We see most states had homeownership
-rates between 60 and 75 percent over the analysis timeframe. Only a
-handful had homeownership rates below 60 percent. Rent burden data
-appears normally distributed. With data distributed normally like this,
-the mean can be a reliable representation for an average data point.
-Since homeownership rate data is slightly left-skewed, its mean might be
-slightly lower than where the graph actually peaks.
+Figure 1 above provides useful information about the distribution of
+homeownership rate and various factors that may influence it. The
+histograms are generally unimodal and bell shaped, though several of
+them depict significant kurtosis. Consistent with the observation above
+that the mean and median homeownership rate are similar, the histogram
+for the homeownership rate shows a roughly normal distribution, albeit
+slightly skewed to the left. We see most states had homeownership rates
+between 60 and 75 percent over the analysis timeframe. Only a handful
+had homeownership rates below 60 percent. Rent burden data appears
+normally distributed.
 
 The housing price index and median income variables were both heavily
 skewed to the right, with most median income values between \$40,000 and
@@ -175,12 +173,10 @@ skewed to the right, with most median income values between \$40,000 and
 of states were significantly wealthier or had higher housing prices than
 their counterparts.
 
-Housing permits per person also had a noticeable righthand tail, with
-the majority of values being generally quite low. This suggests that a
-few states were issuing permits at a significantly faster per-person
-rate than other states and that it is infrequent to generally see high
-levels of permits given that even the outliers were relatively low in
-count.
+Housing permits per person also had a noticeable righthand tail. This
+suggests that a few states were issuing permits (on a per person basis)
+significantly faster than other states. This likely reflects states that
+are still growing and investing in residential development.
 
 The fact that population and the unemployment rate were also both
 right-skewed is as expected. A handful of states (California, Texas,
@@ -326,10 +322,9 @@ For directions on how to conduct multilinear regression and plot
 confidence intervals, [click
 here](https://www.geeksforgeeks.org/r-language/how-to-use-the-coeftest-function-in-r/).
 
-### **Model 1**
+### **Model 1. OLS**
 
     ## 
-    ## Table 2: OLS Regression with Controls
     ## =================================================================
     ##                                      Homeownership Rate          
     ## -----------------------------------------------------------------
@@ -363,29 +358,29 @@ here](https://www.geeksforgeeks.org/r-language/how-to-use-the-coeftest-function-
 
 ![](README_files/figure-gfm/regression_1-1.png)<!-- -->
 
-In the first model we estimated included all our variables of interest
-(mortgage rate, housing price index, rent burden, and housing permits
-per person) as well as control variables (median income and the
-unemployment rate) and state and year fixed effects. The R2 value of
-0.97 tells us that 97 percent of the variability in the homeownership
-rate is explained by the parameters included in the model. The mortgage
-rate, housing price index, rent burden, and housing permits per person
-are all significant at the one percent level, while the unemployment
-rate is significant at the five percent level.
+The first model we estimated included all our variables of interest
+(mortgage rate, house price index, rent burden, and housing permits per
+person) as well as control variables (median income and the unemployment
+rate) and state and year fixed effects. The R2 value of 0.97 tells us
+that 97 percent of the variability in the homeownership rate is
+explained by variation in the parameters included in the model. The
+mortgage rate, house price index, rent burden, and housing permits per
+person are all statistically significant at the one percent level, while
+the unemployment rate is significant at the five percent level.
 
-Several of the variables had effects consistent with what one would
-expect. For example, the coefficient on the mortgage rate implies that
-one percentage point increase is associated with a 2.14 percentage point
-reduction in the homeownership rate. A 0.1 increase in annual housing
-permits per person is associated with a 7.7 percentage point increase in
-homeownership rate, whereas a one percentage point decrease in the
-unemployment rate was associated with a 0.1 percentage reduction.
+Several of the variables had effects that were directionally consistent
+with what one would expect. A one percentage point increase in the
+mortgage rate and a one percentage point increase in the unemployment
+rate are associated with a 2.1 and 0.1 percentage point reduction in the
+homeownership rate, respectively. In addition, a 0.1 increase in annual
+housing permits per person is associated with a 7.7 percentage point
+increase in the homeownership rate.
 
-Other variables had coefficients that appeared potentially counter
-intuitive. For example, the coefficient on the housing price index was
-positive, implying that states with less affordable housing had higher
+Other variables had coefficients that appeared directionally counter
+intuitive. For example, the coefficient on the housing price index is
+positive, implying that states with less affordable housing have higher
 homeownership rates, all else being equal. This is theoretically
-inconsistent and is suggestive of omitted variable bias (i.e., an
+inconsistent and may be indicative of omitted variable bias (i.e., an
 unobserved variable may be correlated with the housing price index). It
 was also surprising to observe that rent burden had a positive
 coefficient, which implies that states with a greater share of the
@@ -394,21 +389,20 @@ being equal. One possible explanation is that individuals living in
 states with unusually high rent may have an incentive to buy their first
 home earlier in life rather than wait and save for their ideal home.
 
-A key weakness of this model is that it does not account for the fact
-that the mortgage rate likely has a lagged effect on the homeownership
-rate. That is, individuals may observe a change in the mortgage rate,
-then start the process of saving for and financing a home, which can
-take months or years. Thus, it is possible that changes in the mortgage
-rate influences human behavior and the homeownership rate in the later
-years. To explore this relationship, we estimated three more regression
-models: one with three lagged mortgage rate variables, one with two
-lagged variables, and one with one lagged variable. The results of those
-models are shown below.
+A key weakness of Model 1 is that it does not account for the fact that
+the mortgage rate likely has a lagged effect on the homeownership rate.
+That is, individuals may observe a change in the mortgage rate, then
+start the process of saving for and financing a home, which can take
+months or years. Thus, it is possible that changes in the mortgage rate
+influences human behavior (and, by extension, the homeownership rate) in
+the later years. To explore this relationship, we estimated three more
+regression models: one with three lagged mortgage rate variables, one
+with two lagged mortgage rate variables, and one with one lagged
+mortgage rate variable. The results of those models are shown below.
 
-### **Model 2**
+### **Model 2. OLS Regression with 3 Lags**
 
     ## 
-    ## Table 3: OLS Regression with 3 Lags
     ## =================================================================
     ##                                      Homeownership Rate          
     ## -----------------------------------------------------------------
@@ -451,47 +445,53 @@ models are shown below.
 
 ![](README_files/figure-gfm/regression_2-1.png)<!-- -->
 
-Including three lagged variables resulted in theoretically inconsistent
-results. The three lagged mortgage rate variables all had small positive
-effects on the homeownership rate, which is inconsistent and likely due
-to model noise.
+Including three lagged variables results in theoretically inconsistent
+results. The three lagged mortgage rate variables all have small
+positive effects on the homeownership rate. The current mortgage rate
+variable has a much smaller effect of the homeownership rate than it did
+in Model 1, and it is now only significant at the 10 percent level. The
+unemployment rate variable is no longer statistically significant.
+Accordingly, we determined adding three lags undermined model accuracy
+and potentially exacerbated omitted variable bias present in the model.
 
-### **Model 3**
+### **Model 3. OLS Regression with 2 Lags**
 
     ## 
-    ## Table 4: OLS Regression with 2 Lags
     ## =================================================================
     ##                                      Homeownership Rate          
     ## -----------------------------------------------------------------
-    ## Mortgage Rate                            -91.49***               
-    ##                                           (20.12)                
+    ## Mortgage Rate                              -0.13*                
+    ##                                            (0.07)                
     ##                                                                  
-    ## Lagged Mortgage Rate (1)                  43.69***               
-    ##                                            (9.60)                
+    ## Lagged Mortgage Rate (1)                  0.22***                
+    ##                                            (0.09)                
     ##                                                                  
-    ## Lagged Mortgage Rate (2)                 -30.09***               
-    ##                                            (6.64)                
+    ## Lagged Mortgage Rate (2)                    0.07                 
+    ##                                            (0.08)                
     ##                                                                  
-    ## House Price Index                         0.002**                
+    ## House Price Index                         0.60***                
+    ##                                            (0.15)                
+    ##                                                                  
+    ## Median Income                              0.002*                
     ##                                           (0.001)                
     ##                                                                  
-    ## Median Income                              0.0000                
+    ## Unemployment Rate                          0.0000                
     ##                                           (0.0000)               
     ##                                                                  
-    ## Unemployment Rate                          -0.06                 
+    ## Rent Burden                                -0.04                 
     ##                                            (0.04)                
     ##                                                                  
-    ## Rent Burden                               0.08***                
+    ## Housing Permits per Person                0.06***                
     ##                                            (0.02)                
     ##                                                                  
-    ## Housing Permits per Person                91.45***               
-    ##                                           (29.83)                
+    ## perm_per_person                          114.42***               
+    ##                                           (30.52)                
     ##                                                                  
-    ## N                                           850                  
+    ## N                                           800                  
     ## R2                                          0.97                 
     ## Adjusted R2                                 0.97                 
-    ## Residual Std. Error                   0.82 (df = 779)            
-    ## F Statistic                       341.97*** (df = 70; 779)       
+    ## Residual Std. Error                   0.80 (df = 730)            
+    ## F Statistic                       339.23*** (df = 69; 730)       
     ## =================================================================
     ## Notes:                     ***Significant at the 1 percent level.
     ##                             **Significant at the 5 percent level.
@@ -499,46 +499,53 @@ to model noise.
 
 ![](README_files/figure-gfm/regression_3-1.png)<!-- -->
 
-The third model included two lagged mortgage rate variables. The results
-of this model were even more nonsensical. The mortgage rate variable and
-the two-year lagged variable both had large, negative coefficients,
-while the coefficient on the one year lagged variable was similarly
-large and positive. All three coefficient were significant at the one
-percent level.
+Model 3 only includes two lagged mortgage rate variables. The results of
+this model were even more nonsensical. The mortgage rate variable and
+the two-year lagged variable both had extrordinarily large, negative
+coefficients, while the coefficient on the one year lagged variable was
+similarly large and positive. All three coefficient were significant at
+the one percent level. It appeared the model fitted itself by weighting
+the three variables against one another. Again, due to the theoretical
+inconsistency of this result, we do not prefer this model.
 
-### **Model 4**
+### **Model 4: OLS Regression with 1 Lag**
 
     ## 
-    ## Table 5: OLS Regression with 1 Lag
     ## =================================================================
     ##                                      Homeownership Rate          
     ## -----------------------------------------------------------------
-    ## Mortgage Rate                             -5.86***               
-    ##                                            (1.27)                
+    ## Mortgage Rate                              -0.13*                
+    ##                                            (0.07)                
     ##                                                                  
-    ## Lagged Mortgage Rate (1)                  -0.38**                
+    ## Lagged Mortgage Rate (1)                  0.22***                
+    ##                                            (0.09)                
+    ##                                                                  
+    ## House Price Index                           0.07                 
+    ##                                            (0.08)                
+    ##                                                                  
+    ## Median Income                             0.60***                
     ##                                            (0.15)                
     ##                                                                  
-    ## House Price Index                         0.002**                
+    ## Unemployment Rate                          0.002*                
     ##                                           (0.001)                
     ##                                                                  
-    ## Median Income                              0.0000                
+    ## Rent Burden                                0.0000                
     ##                                           (0.0000)               
     ##                                                                  
-    ## Unemployment Rate                         -0.08**                
+    ## Housing Permits per Person                 -0.04                 
     ##                                            (0.04)                
     ##                                                                  
-    ## Rent Burden                               0.10***                
+    ## rent_burden                               0.06***                
     ##                                            (0.02)                
     ##                                                                  
-    ## Housing Permits per Person                91.04***               
-    ##                                           (27.69)                
+    ## perm_per_person                          114.42***               
+    ##                                           (30.52)                
     ##                                                                  
-    ## N                                           900                  
+    ## N                                           800                  
     ## R2                                          0.97                 
     ## Adjusted R2                                 0.97                 
-    ## Residual Std. Error                   0.83 (df = 828)            
-    ## F Statistic                       353.64*** (df = 71; 828)       
+    ## Residual Std. Error                   0.80 (df = 730)            
+    ## F Statistic                       339.23*** (df = 69; 730)       
     ## =================================================================
     ## Notes:                     ***Significant at the 1 percent level.
     ##                             **Significant at the 5 percent level.
@@ -550,34 +557,33 @@ The fourth and final model included just one lagged variable. The
 coefficient on the one year lagged mortgage rate variable is modest, but
 negative as expected and statistically significant at the five percent
 level. The coefficients on the other variables are generally similar to
-the ones from the first model, with two notable exceptions. First the
-effect of the current mortgage rate is shown to be nearly three times as
-big. In model 4, a one percentage point increase in the current mortgage
-rate is associated with a 5.9 percentage point reduction in the
-homeownership rate, all else being equal (compared to the 2.1 percentage
-reduction shown in model 1). The second notable change was to the
-housing permits per person variable. In Model 4, a 0.1 increase in
-annual housing permits per person is associated with a 9.1 percentage
-point increase in homeownership rate (compared to the 7.7 percentage
-point increase shown in Model 1).
+the coefficients from the first model, with two notable exceptions.
+First the effect of the current mortgage rate is shown to be nearly
+three times as big. In model 4, a one percentage point increase in the
+current mortgage rate is associated with a 5.9 percentage point
+reduction in the homeownership rate, all else being equal (compared to
+the 2.1 percentage reduction shown in Model 1). The second notable
+change is to the housing permits per person coefficient In Model 4, a
+0.1 increase in annual housing permits per person is associated with a
+9.1 percentage point increase in homeownership rate (compared to the 7.7
+percentage point reduction shown in Model 1).
 
 Model 4 is our preferred model. We believe there is strong theoretical
 justification that the mortgage rate would have a delayed effect on the
 homeownership rate (i.e., saving and financing a house does not happen
-overnight). Including multiple lags disrupted the model in ways that
-undermined reason (coefficients were unintuitive, the effect of the
-unemployment rate was no longer statistically significant, etc.).
-However, including just one lagged mortgage rate variable seemed to
-improve the model. The coefficient on the lagged variable was negative
-as expected (and statistically significant), and the other variables
-were not influenced in implausible ways. As noted, the coefficients on
-the current mortgage rate and housing permits per person both increased
-in magnitude, but not to an unreasonable degree.
+overnight). Including multiple lagged variables disrupted the model in
+ways that defied reason (coefficients were unbelievably large or
+directionally inconsistent, the effect of the unemployment rate was no
+longer statistically significant, etc.). However, including just one
+lagged mortgage rate variable seems to improve the model. The
+coefficient on the lagged variable is negative as expected and
+statistically significant, and the other variables are not influenced in
+implausible ways. The coefficients on the current mortgage rate and
+housing permits per person are larger in magnitude, but plausibly so.
 
-### **Compare Models**
+### **Regression Comparisons**
 
     ## 
-    ## Table 6: Regression Comparisons
     ## ==============================================================================================================================
     ##                                                                    Homeownership Rate                                         
     ##                                      OLS                  OLS - 3 Lags             OLS - 2 Lags             OLS - 1 Lag       
@@ -620,8 +626,8 @@ in magnitude, but not to an unreasonable degree.
     ##                                                                                          **Significant at the 5 percent level.
     ##                                                                                          *Significant at the 10 percent level.
 
-Table 6 shows all four regression models side-by-side for comparison.
-Our preferred model, Model 4, is shown in the column furthest to the
+The last table depicts all four of the models side-by-side for
+comparison. Our preferred model, Model 4, is show in the column furthest
 right.
 
 # Conclusion
@@ -818,12 +824,21 @@ TO BE ADDED BY MAY 11.
 
 # Version Control
 
-\[Version control text here.\] \### Team Workflow To keep the repository
-organized, team members should: 1. Pull the most recent version of the
-repository before starting work 2. Make changes locally in the
-appropriate files 3. Knit `README.Rmd` after updating it so that
-`README.md` stays current 4. Commit changes with clear commit messages
-5. Push updates after meaningful progress
+Our team used clear and regular communication and the team workflow
+outlined below to prevent version control issues. There were some
+challenges at the beginning of the project as we learned the nuances of
+GitHub and repository management, but these challenges were easily
+overcome. We successfuly completed a strong project, and never struggled
+with losing or overwriting work in error. All team members agree GitHub
+is a powerful tool that is useful for collaborative coding projects.
+
+### Team Workflow
+
+To keep the repository organized, team members should: 1. Pull the most
+recent version of the repository before starting work 2. Make changes
+locally in the appropriate files 3. Knit `README.Rmd` after updating it
+so that `README.md` stays current 4. Commit changes with clear commit
+messages 5. Push updates after meaningful progress
 
 ## References
 
