@@ -10,7 +10,7 @@ Class Project
 - [Policy Recommendation](#policy-recommendation)
 - [Recorded Policy Brief](#recorded-policy-brief)
 - [Version Control](#version-control)
-- [References](#references)
+  - [References](#references)
 
 ### **This landing page displays the knitted output of our README.Rmd file. For the code behind the analysis and figures shown below, please consult the README.Rmd file.**
 
@@ -200,25 +200,24 @@ Exploring average state homeownership across time illustrates that it
 peaked right before and declined following the 2008 recession. It hit
 its minimum between 2014 and 2016 before gradually recovering in the
 late 2010s and early 2020s, though not yet back to the levels seen in
-2005. Over the same period, following the pandemic in 2020, the average
-state HPI (House Price Index) increased substantially, especially after
-2020, suggesting that housing prices rose much faster than homeownership
-rates recovered. The HPI, a means of measuring the rate at which home
-prices are changing across the housing market in the U.S., is an
-important indicator of the housing market as it reflects the kind of
-market (whether buyers or sellers are more so advantaged), and the
-year-to-year change indicating strength and growth. The mortgage rate
-trend provides additional context. The 30-year mortgage rate started to
-decline around and following the 2008 recession, staying consistently
-low from about 2012 through 2016. While it once again plummeted in 2020,
-coinciding with the COVID-19 pandemic and global shutdown, it saw a
-sharp rise immediately after and only recently started to plateau – at
-its highest level in the past 20 years. This creates an important policy
-concern, as even though homeownership partially recovered after the
-mid-2010s, households now face a combination of elevated housing prices
-and higher borrowing costs. Together, these trends suggest that
-homeownership affordability is shaped by multiple pressures at once
-rather than by any single variable alone.
+2005. Over the same period, the average state HPI (House Price Index)
+increased substantially, suggesting that housing prices rose much faster
+than homeownership rates recovered. The HPI, a means of measuring the
+rate at which home prices are changing across the housing market in the
+U.S., is an important indicator of the housing market as it reflects the
+kind of market (whether buyers or sellers are more so advantaged), and
+the year-to-year change indicating strength and growth. The mortgage
+rate trend provides additional context. The 30-year mortgage rate
+started to decline around and following the 2008 recession, staying
+consistently low from about 2012 through 2016. While it once again
+plummeted from roughly 2018 through 2021, it saw a sharp rise
+immediately after and only recently started to plateau – at its highest
+level in the past 20 years. This creates an important policy concern, as
+even though homeownership partially recovered after the mid-2010s,
+households now face a combination of elevated housing prices and higher
+borrowing costs. Together, these trends suggest that homeownership
+affordability is shaped by multiple pressures at once rather than by any
+single variable alone.
 
 ### **Correlation Matrix:**
 
@@ -696,15 +695,27 @@ effects of policy-relevant housing market changes.
 
 # Policy Recommendation
 
-Turning to policy, it should first and foremost be the priority to
-increase the housing supply, given the robust finding that more permits
-per capita result in higher rates of homeownership. To do so, certain
-barriers can be reduced. For example, working to update zoning
-regulations to streamline the use of land and permit more density and
-innovative construction techniques/housing types. It is important not
-simply to increase housing generally but to increase affordable housing,
-as homeownership rates are lower in largely populated areas where the
-rent burden is already high. In addition to increasing the homeownership
+Key trends over the past two decades present an important policy
+concern: even though homeownership partially recovered after the
+mid-2010s, households now face a combination of elevated housing prices
+and higher borrowing costs. Given the robust finding that more permits
+per capita are associated with higher rates of homeownership and high
+rent burden negative correlation with the homeownership rate, we would
+advice HUD Secretary Scott Turner to approach subsequent policy with a
+two-pronged approach: federal legislation efforts should first be
+directed toward reducing zoning regulations to increase the housing
+supply and, subsequently, be put toward the HOME Program to allow for
+both financing of the building of affordable home and rental properties
+as well as increased access to subsidized and/or lower fixed-rate
+mortgages.
+
+To accomplish this, policy should focus on the reduction of various
+barriers. For example, working to update zoning regulations to
+streamline the use of land and permit more density and innovative
+construction techniques/housing types. It is important not simply to
+increase housing generally but to increase affordable housing, as
+homeownership rates are lower in largely populated areas where the rent
+burden is already high. In addition to increasing the homeownership
 rate, increasing access to affordable housing also has a wealth of other
 benefits for people. There have been several initiatives at the state
 level that can be applied at the federal level to improve homeownership
@@ -716,28 +727,81 @@ reduce these kinds of restrictive zoning, which are otherwise
 contributing to the affordability crisis in the US, may further aid this
 endeavor to increase homeownership rates.
 
-With high rent burden correlated with low homeownership, actions should
-be taken to also address this renter issue to allow for mobility toward
-homeownership for those who want to purchase a house but have
-historically financially struggled to do so because of the already large
-burden of rent. This could be approached by the development of more
-affordable rental properties and/or expanding rental assistance. We also
-need to turn to the impact mortgage rates have, with a one percentage
-point increase resulting in both an immediate and long-term negative
-effect on homeownership. With mortgage rates rising and staying high in
-recent years, it may be helpful to expand access to and opportunity for
-fixed-rate mortgages at lower rates. Combined, further resources and
-energy need to be directed toward the HOME Investment Partnerships
-Program, both at the rental (renter and rental construction development)
-and homeownership levels.
+By reducing zoning barriers, an important, short-term effect is being
+able to issue more housing permits, which can, in turn, be used to build
+at a lower cost per-unit. While generally increasing the supply of
+affordable housing supply may also contribute to a reduction in
+experienced rent burden, other reductions, such as in parking
+requirements, could contribute to lower rent and, in turn, rent burden.
+Doing so allows a city to meet the actual needs of a given community
+while lowering the costs of new construction–a burden that would
+otherwise be put on future tenants. In the long term, people may become
+more able to save for and purchase houses. Further, with more
+high-density housing and less parking–particularly if this is focused in
+transit hubs–people may be more inclined and able to opt to use public
+transportation and/or live closer to their jobs, which could help reduce
+carbon emissions in the long term. While changes to zoning to allow for
+densification may increase property value, however, care must be taken
+to ensure that low-income neighborhoods affected by these changes don’t
+experience high levels of gentrification and displacement–a potential,
+negative, and long-term effect of this process; given the homeownership
+rate’s relationship with rent burden, providing affordable housing must
+stay at the core of these policy changes. As housing supply eventually
+increases, high-density areas may also experience greater strain on
+institutions and community organizations, such as schools, hospitals,
+playgrounds, and places of worship.
 
-Specific focus should be given to states with the lowest rates of
-homeownership, like California, New York, Nevada, and Hawaii. Those at
-the federal level should aim to work with and hear from homeowners,
-developers, and local and state legislators to best understand the needs
-of those in areas struggling most. Inspiration can also be taken from
-successful state policies, especially in states with higher rates of
-homeownership, more permits per person, and lower rent burden.
+Furthermore, with high rent burden correlated with low homeownership,
+actions should be taken to also address this renter issue to allow for
+mobility toward homeownership for those who want to purchase a house but
+have historically financially struggled to do so because of the already
+large burden of rent. This could be approached by the development of
+more affordable dedicated-rental properties and/or expanded rental
+assistance. Given this, we also need to turn to the impact mortgage
+rates have, with a one percentage point increase resulting in both an
+immediate and long-term negative effect on homeownership. With mortgage
+rates rising and staying high in recent years, it would also be
+beneficial to expand access to and opportunity for subsidized and/or
+lower fixed-rate mortgages. Combined, further resources and energy need
+to be directed toward the HOME Investment Partnerships Program, both at
+the rental (renter and rental construction development) and
+homeownership levels. It is recommended that specific focus be given to
+states with the lowest rates of homeownership, like California, New
+York, Nevada, and Hawaii. Those at the federal level should aim to work
+with and hear from homeowners, developers, and local and state
+legislators to best understand the needs of those in areas struggling
+most, as well as to assist with increasing the supply of housing by
+supporting the implementation of pre-reviewed housing designs and
+planning efforts. Inspiration can also be taken from successful state
+policies, especially in states with higher rates of homeownership, more
+permits per capita, and lower rent burden.
+
+Increased access to subsidized and/or lower fixed-rate mortgages may
+make homeownership more attainable for people who previously found it
+out of reach. By focusing the HOME Program support first to states with
+the lowest homeownership rates, more resources can be put toward the
+development of necessary intermediate steps like lowering rent burden
+and increasing housing supply. It may also be mutually beneficial to
+engage in conversation with those who have a stake in the outcome of
+this legislation. Community members and legislators can help shape
+certain decisions by providing their specific insights, and proactive
+involvement may help reduce the level of uncertainty or resistance
+residents might otherwise feel if outsiders were making decisions for
+and about their community. In the long-term, it is essential that the
+housing supply is able to increase as these kinds of mortgages become
+available to avoid the inflation risk it would otherwise run. An
+anti-displacement strategy is also required in the long run to protect
+current renters and homeowners in low-income communities, who may
+otherwise be harmed by the effects of new construction and a high
+density of new units.
+
+Ultimately, legislation that is two-fold–i.e., that addresses the issues
+of housing supply and affordability by reducing zoning regulations and
+directing HOME Program resources toward states with lower homeownership
+for permits and construction as well as toward increased access to
+subsidized and/or lower fixed-rate mortgages–will allow the Department
+of Housing and Urban Development to comprehensively address these
+barriers to homeownership.
 
 # Recorded Policy Brief
 
@@ -752,7 +816,9 @@ appropriate files 3. Knit `README.Rmd` after updating it so that
 `README.md` stays current 4. Commit changes with clear commit messages
 5. Push updates after meaningful progress
 
-# References
+## References
+
+\#Data
 
 Federal Housing Finance Agency. (n.d.). *FHFA House Price Index®
 datasets*. Retrieved 2026, from
@@ -771,3 +837,31 @@ Retrieved 2026, from
 
 U.S. Census Bureau. (n.d.). *Building Permits Survey*. Retrieved 2026,
 from <https://www.census.gov/permits>
+
+U.S. Department of Housing and Urban Development. (2026, May 2). HOME
+Investment Partnerships Program. hud.gov
+
+\#Policy
+
+Developing an anti-displacement strategy - Local Housing Solutions.
+Housing Solutions Lab. (n.d.).
+<https://www.localhousingsolutions.org/plan/developing-an-anti-displacement-strategy/>
+
+Freemark, Y. (2026, March 3). How zoning fits into a national housing
+affordability strategy \| Urban Institute. Urban Institute.
+<https://www.urban.org/urban-wire/how-zoning-fits-national-housing-affordability-strategy>
+
+Hanley, A. (2023, December 22). Rethinking Zoning to Increase Affordable
+Housing. The National Association of Housing and Redevelopment Officials
+(NAHRO).
+<https://www.nahro.org/journal_article/rethinking-zoning-to-increase-affordable-housing/>
+
+HOME Homeownership. HUD Exchange. (n.d.).
+<https://www.hudexchange.info/programs/home/topics/homeownership/#policy-guidance-and-faqs>
+
+HOME Rental Housing. HUD Exchange. (n.d.).
+<https://www.hudexchange.info/programs/home/topics/rental-housing/#policy-guidance-and-faqs>
+
+Rifkin, C. (2024, June 7). Increasing the housing supply by reducing
+costs and barriers. National Conference of State Legislatures.
+<https://www.ncsl.org/human-services/increasing-the-housing-supply-by-reducing-costs-and-barriers>
