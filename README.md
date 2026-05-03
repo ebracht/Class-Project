@@ -818,7 +818,7 @@ appropriate files 3. Knit `README.Rmd` after updating it so that
 
 ## References
 
-\#Data
+### Data
 
 Federal Housing Finance Agency. (n.d.). *FHFA House Price Index®
 datasets*. Retrieved 2026, from
@@ -841,7 +841,7 @@ from <https://www.census.gov/permits>
 U.S. Department of Housing and Urban Development. (2026, May 2). HOME
 Investment Partnerships Program. hud.gov
 
-\#Policy
+### Policy
 
 Developing an anti-displacement strategy - Local Housing Solutions.
 Housing Solutions Lab. (n.d.).

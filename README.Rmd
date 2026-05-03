@@ -1016,7 +1016,7 @@ To keep the repository organized, team members should:
 
 ## References
 
-#Data
+### Data
 
 Federal Housing Finance Agency. (n.d.). *FHFA House Price Index® datasets*. Retrieved 2026, from https://www.fhfa.gov/data/house-price-index
 
@@ -1030,7 +1030,7 @@ U.S. Census Bureau. (n.d.). *Building Permits Survey*. Retrieved 2026, from http
 
 U.S. Department of Housing and Urban Development. (2026, May 2). HOME Investment Partnerships Program. hud.gov
 
-#Policy
+### Policy
 
 Developing an anti-displacement strategy - Local Housing Solutions. Housing Solutions Lab. (n.d.). https://www.localhousingsolutions.org/plan/developing-an-anti-displacement-strategy/ 
 
