@@ -714,15 +714,15 @@ Key trends over the past two decades present an important policy
 concern: even though homeownership partially recovered after the
 mid-2010s, households now face a combination of elevated housing prices
 and higher borrowing costs. Given the robust finding that more permits
-per capita are associated with higher rates of homeownership and high
-rent burden negative correlation with the homeownership rate, we would
-advise HUD Secretary Scott Turner to approach subsequent policy with a
-two-pronged approach: federal legislation efforts should first be
-directed toward reducing zoning regulations to increase the housing
-supply and, subsequently, be put toward the HOME Program to allow for
-both financing of the building of affordable home and rental properties
-as well as increased access to subsidized and/or lower fixed-rate
-mortgages.
+per capita are associated with higher rates of homeownership and that
+high rent burden is negatively correlated with the homeownership rate
+(see correlation matrix), we would advise HUD Secretary Scott Turner to
+approach subsequent policy with a two-pronged approach: federal
+legislation efforts should first be directed toward reducing zoning
+regulations to increase the housing supply and, subsequently, be put
+toward the HOME Program to allow for both the financing of affordable
+home and rental property construction as well as increased access to
+subsidized and/or lower fixed-rate mortgages.
 
 To accomplish this, policy should focus on the reduction of various
 barriers. For example, working to update zoning regulations to
@@ -780,7 +780,7 @@ nature of this relationship, actions should be taken to address this
 renter issue and allow for mobility toward affordable homeownership for
 those who want to purchase a house but have historically struggled to do
 so because of the already large burden of rent. This could be approached
-by the development of more affordable dedicated-rental properties and/or
+by the development of more affordable dedicated rental properties and/or
 expanded rental assistance. Given this, we also need to turn to the
 impact mortgage rates have, with a one percentage point increase
 resulting in both an immediate and long-term negative effect on
