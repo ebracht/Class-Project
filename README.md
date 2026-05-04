@@ -188,32 +188,32 @@ during economic recessions.
 
 ### **Figure 2. Key Trends Over Time:**
 
-![](README_files/figure-gfm/figure_2-1.png)<!-- --> Figure 2 shows broad
-time trends in average state homeownership rates, house price index
-values, and 30-year mortgage rates.
+![](README_files/figure-gfm/figure_2-1.png)<!-- -->
 
-Exploring average state homeownership across time illustrates that it
-peaked right before and declined following the 2008 recession. It hit
-its minimum between 2014 and 2016 before gradually recovering in the
-late 2010s and early 2020s, though not yet back to the levels seen in
-2005. Over the same period, the average state HPI (House Price Index)
-increased substantially, suggesting that housing prices rose much faster
-than homeownership rates recovered. The HPI, a means of measuring the
-rate at which home prices are changing across the housing market in the
-U.S., is an important indicator of the housing market as it reflects the
-kind of market (whether buyers or sellers are more so advantaged), and
-the year-to-year change indicating strength and growth. The mortgage
-rate trend provides additional context. The 30-year mortgage rate
-started to decline around and following the 2008 recession, staying
-consistently low from about 2012 through 2016. While it once again
-plummeted from roughly 2018 through 2021, it saw a sharp rise
-immediately after and only recently started to plateau – at its highest
-level in the past 20 years. This creates an important policy concern, as
-even though homeownership partially recovered after the mid-2010s,
-households now face a combination of elevated housing prices and higher
-borrowing costs. Together, these trends suggest that homeownership
-affordability is shaped by multiple pressures at once rather than by any
-single variable alone.
+Figure 2 shows broad time trends in average state homeownership rates,
+house price index values, and 30-year mortgage rates. Exploring average
+state homeownership across time illustrates that it peaked right before
+and declined following the 2008 recession. It hit its minimum between
+2014 and 2016 before gradually recovering in the late 2010s and early
+2020s, though not yet back to the levels seen in 2005. Over the same
+period, the average state HPI (House Price Index) increased
+substantially, suggesting that housing prices rose much faster than
+homeownership rates recovered. The HPI, a means of measuring the rate at
+which home prices are changing across the housing market in the U.S., is
+an important indicator of the housing market as it reflects the kind of
+market (whether buyers or sellers are more so advantaged), and the
+year-to-year change indicating strength and growth. The mortgage rate
+trend provides additional context. The 30-year mortgage rate started to
+decline around and following the 2008 recession, staying consistently
+low from about 2012 through 2016. While it once again plummeted from
+roughly 2018 through 2021, it saw a sharp rise immediately after and
+only recently started to plateau – at its highest level in the past 20
+years. This creates an important policy concern, as even though
+homeownership partially recovered after the mid-2010s, households now
+face a combination of elevated housing prices and higher borrowing
+costs. Together, these trends suggest that homeownership affordability
+is shaped by multiple pressures at once rather than by any single
+variable alone.
 
 ### **Figure 3. Correlation Matrix:**
 
@@ -842,11 +842,14 @@ is a powerful tool that is useful for collaborative coding projects.
 
 ### Team Workflow
 
-To keep the repository organized, team members should: 1. Pull the most
-recent version of the repository before starting work 2. Make changes
-locally in the appropriate files 3. Knit `README.Rmd` after updating it
-so that `README.md` stays current 4. Commit changes with clear commit
-messages 5. Push updates after meaningful progress
+To keep the repository organized, team members should:
+
+1.  Pull the most recent version of the repository before starting work
+2.  Make changes locally in the appropriate files
+3.  Knit `README.Rmd` after updating it so that `README.md` stays
+    current
+4.  Commit changes with clear commit messages
+5.  Push updates after meaningful progress
 
 ## References
 
