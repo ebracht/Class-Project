@@ -834,7 +834,7 @@ ggplot(plot_data2, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * S
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-Including three lagged variables results in theoretically inconsistent results. The three lagged mortgage rate variables all have small positive effects on the homeownership rate. The current mortgage rate variable has a much smaller effect of the homeownership rate than it did in Model 1, and it is now only significant at the 10 percent level. The unemployment rate variable is no longer statistically significant. Accordingly, we determined adding three lags undermined model accuracy and potentially exacerbated omitted variable bias present in the model.
+Including three lagged variables results in theoretically inconsistent results. The three lagged mortgage rate variables all have small positive effects on the homeownership rate. The current mortgage rate variable has a much smaller effect on the homeownership rate than it did in Model 1, and it is now only significant at the 10 percent level. The unemployment rate variable is no longer statistically significant. Accordingly, we determined adding three lags undermined model accuracy and potentially caused the model to over-fit itself.
 
 ### **Model 3. OLS Regression with 2 Lags**
 ```{r regression_3, echo=FALSE, message=FALSE, warning = FALSE}
@@ -845,7 +845,7 @@ model3 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 +
                as.factor(year), data = merged )
 
 #Summarize model
-stargazer(model2, type="text", digits = 2, 
+stargazer(model3, type="text", digits = 2, 
           style = "qje",
           dep.var.labels = "Homeownership Rate", keep=c("mortgage_rate", 
           "mortgage_rate_lag1", "mortgage_rate_lag2", 
@@ -889,7 +889,7 @@ ggplot(plot_data3, aes(x = Coefficient, y = Estimate, ymin = Estimate - 1.96 * S
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-Model 3 only includes two lagged mortgage rate variables. The results of this model were even more nonsensical. The mortgage rate variable and the two-year lagged variable both had extrordinarily large, negative coefficients, while the coefficient on the one year lagged variable was similarly large and positive. All three coefficient were significant at the one percent level. It appeared the model fitted itself by weighting the three variables against one another. Again, due to the theoretical inconsistency of this result, we do not prefer this model.
+Model 3 only includes two lagged mortgage rate variables. The results of this model were even more nonsensical. The mortgage rate variable and the two-year lagged mortgage rate both had extrordinarily large, negative coefficients, while the coefficient on the one year lagged variable was similarly large and positive. All three coefficients were significant at the one percent level. It appeared the model fitted itself by weighting the three variables against one another. Again, due to the theoretical inconsistency of this result, we do not prefer this model.
 
 ### **Model 4: OLS Regression with 1 Lag**
 ```{r regression_4, echo=FALSE, message=FALSE, warning = FALSE}
@@ -899,7 +899,7 @@ model4 <- lm(homeownership_rate ~ mortgage_rate + mortgage_rate_lag1 +
                perm_per_person + state + as.factor(year), data = merged )
 
 #Summarize model
-stargazer(model2, type="text", digits = 2, 
+stargazer(model4, type="text", digits = 2, 
           style = "qje",
           dep.var.labels = "Homeownership Rate", keep=c("mortgage_rate", 
           "mortgage_rate_lag1", 

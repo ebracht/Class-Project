@@ -448,11 +448,11 @@ mortgage rate variable. The results of those models are shown below.
 Including three lagged variables results in theoretically inconsistent
 results. The three lagged mortgage rate variables all have small
 positive effects on the homeownership rate. The current mortgage rate
-variable has a much smaller effect of the homeownership rate than it did
+variable has a much smaller effect on the homeownership rate than it did
 in Model 1, and it is now only significant at the 10 percent level. The
 unemployment rate variable is no longer statistically significant.
 Accordingly, we determined adding three lags undermined model accuracy
-and potentially exacerbated omitted variable bias present in the model.
+and potentially caused the model to over-fit itself.
 
 ### **Model 3. OLS Regression with 2 Lags**
 
@@ -460,38 +460,35 @@ and potentially exacerbated omitted variable bias present in the model.
     ## =================================================================
     ##                                      Homeownership Rate          
     ## -----------------------------------------------------------------
-    ## Mortgage Rate                              -0.13*                
-    ##                                            (0.07)                
+    ## Mortgage Rate                            -91.49***               
+    ##                                           (20.12)                
     ##                                                                  
-    ## Lagged Mortgage Rate (1)                  0.22***                
-    ##                                            (0.09)                
+    ## Lagged Mortgage Rate (1)                  43.69***               
+    ##                                            (9.60)                
     ##                                                                  
-    ## Lagged Mortgage Rate (2)                    0.07                 
-    ##                                            (0.08)                
+    ## Lagged Mortgage Rate (2)                 -30.09***               
+    ##                                            (6.64)                
     ##                                                                  
-    ## House Price Index                         0.60***                
-    ##                                            (0.15)                
-    ##                                                                  
-    ## Median Income                              0.002*                
+    ## House Price Index                         0.002**                
     ##                                           (0.001)                
     ##                                                                  
-    ## Unemployment Rate                          0.0000                
+    ## Median Income                              0.0000                
     ##                                           (0.0000)               
     ##                                                                  
-    ## Rent Burden                                -0.04                 
+    ## Unemployment Rate                          -0.06                 
     ##                                            (0.04)                
     ##                                                                  
-    ## Housing Permits per Person                0.06***                
+    ## Rent Burden                               0.08***                
     ##                                            (0.02)                
     ##                                                                  
-    ## perm_per_person                          114.42***               
-    ##                                           (30.52)                
+    ## Housing Permits per Person                91.45***               
+    ##                                           (29.83)                
     ##                                                                  
-    ## N                                           800                  
+    ## N                                           850                  
     ## R2                                          0.97                 
     ## Adjusted R2                                 0.97                 
-    ## Residual Std. Error                   0.80 (df = 730)            
-    ## F Statistic                       339.23*** (df = 69; 730)       
+    ## Residual Std. Error                   0.82 (df = 779)            
+    ## F Statistic                       341.97*** (df = 70; 779)       
     ## =================================================================
     ## Notes:                     ***Significant at the 1 percent level.
     ##                             **Significant at the 5 percent level.
@@ -501,12 +498,13 @@ and potentially exacerbated omitted variable bias present in the model.
 
 Model 3 only includes two lagged mortgage rate variables. The results of
 this model were even more nonsensical. The mortgage rate variable and
-the two-year lagged variable both had extrordinarily large, negative
-coefficients, while the coefficient on the one year lagged variable was
-similarly large and positive. All three coefficient were significant at
-the one percent level. It appeared the model fitted itself by weighting
-the three variables against one another. Again, due to the theoretical
-inconsistency of this result, we do not prefer this model.
+the two-year lagged mortgage rate both had extrordinarily large,
+negative coefficients, while the coefficient on the one year lagged
+variable was similarly large and positive. All three coefficients were
+significant at the one percent level. It appeared the model fitted
+itself by weighting the three variables against one another. Again, due
+to the theoretical inconsistency of this result, we do not prefer this
+model.
 
 ### **Model 4: OLS Regression with 1 Lag**
 
@@ -514,38 +512,32 @@ inconsistency of this result, we do not prefer this model.
     ## =================================================================
     ##                                      Homeownership Rate          
     ## -----------------------------------------------------------------
-    ## Mortgage Rate                              -0.13*                
-    ##                                            (0.07)                
+    ## Mortgage Rate                             -5.86***               
+    ##                                            (1.27)                
     ##                                                                  
-    ## Lagged Mortgage Rate (1)                  0.22***                
-    ##                                            (0.09)                
-    ##                                                                  
-    ## House Price Index                           0.07                 
-    ##                                            (0.08)                
-    ##                                                                  
-    ## Median Income                             0.60***                
+    ## Lagged Mortgage Rate (1)                  -0.38**                
     ##                                            (0.15)                
     ##                                                                  
-    ## Unemployment Rate                          0.002*                
+    ## House Price Index                         0.002**                
     ##                                           (0.001)                
     ##                                                                  
-    ## Rent Burden                                0.0000                
+    ## Median Income                              0.0000                
     ##                                           (0.0000)               
     ##                                                                  
-    ## Housing Permits per Person                 -0.04                 
+    ## Unemployment Rate                         -0.08**                
     ##                                            (0.04)                
     ##                                                                  
-    ## rent_burden                               0.06***                
+    ## Rent Burden                               0.10***                
     ##                                            (0.02)                
     ##                                                                  
-    ## perm_per_person                          114.42***               
-    ##                                           (30.52)                
+    ## Housing Permits per Person                91.04***               
+    ##                                           (27.69)                
     ##                                                                  
-    ## N                                           800                  
+    ## N                                           900                  
     ## R2                                          0.97                 
     ## Adjusted R2                                 0.97                 
-    ## Residual Std. Error                   0.80 (df = 730)            
-    ## F Statistic                       339.23*** (df = 69; 730)       
+    ## Residual Std. Error                   0.83 (df = 828)            
+    ## F Statistic                       353.64*** (df = 71; 828)       
     ## =================================================================
     ## Notes:                     ***Significant at the 1 percent level.
     ##                             **Significant at the 5 percent level.
