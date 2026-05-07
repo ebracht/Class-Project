@@ -73,7 +73,8 @@ packages <- c(
   "sandwich",
   "lmtest",
   "stargazer",
-  "modelsummary"
+  "modelsummary",
+  "voice"
 )
 
 # checks if package available (if not - install packages)
@@ -995,7 +996,11 @@ Ultimately, legislation that is two-fold–i.e., that addresses the issues of ho
 
 # Recorded Policy Brief
 
-TO BE ADDED BY MAY 11.
+```{r policy_brief, echo=FALSE, message=FALSE, warning = FALSE}
+#Upload policy brief
+embed_video(src="Group2SoftwareToolsPolicyBriefFinal.mp4")
+
+```
 
 # Version Control
 

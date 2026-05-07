@@ -820,7 +820,7 @@ barriers to homeownership.
 
 # Recorded Policy Brief
 
-TO BE ADDED BY MAY 11.
+<video width='320' height='240' controls> <source src='Group2SoftwareToolsPolicyBriefFinal.mp4' type='video/mp4'> Your browser does not support the video tag;  for browser support, please see:  https://www.w3schools.com/tags/tag_video.asp </video>
 
 # Version Control
 
