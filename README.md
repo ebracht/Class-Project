@@ -822,6 +822,9 @@ barriers to homeownership.
 
 <video width='320' height='240' controls> <source src='Group2SoftwareToolsPolicyBriefFinal.mp4' type='video/mp4'> Your browser does not support the video tag;  for browser support, please see:  https://www.w3schools.com/tags/tag_video.asp </video>
 
+[The policy brief is available
+here.](Group2SoftwareToolsPolicyBriefFinal.mp4)
+
 # Version Control
 
 Our team used clear and regular communication and the team workflow

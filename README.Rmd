@@ -1,10 +1,10 @@
 ---
 title: "Class Project"
 output:
-  html_document: default
   github_document:
     toc: true
     toc_depth: 2
+  html_document: default
 ---
 
 
@@ -1001,6 +1001,8 @@ Ultimately, legislation that is two-fold–i.e., that addresses the issues of ho
 embed_video(src="Group2SoftwareToolsPolicyBriefFinal.mp4")
 
 ```
+
+[The policy brief is available here.](Group2SoftwareToolsPolicyBriefFinal.mp4)
 
 # Version Control
 
